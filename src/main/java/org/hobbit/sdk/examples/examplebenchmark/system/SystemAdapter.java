@@ -4,7 +4,10 @@ import org.hobbit.core.components.AbstractSystemAdapter;
 import org.hobbit.sdk.JenaKeyValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import org.springframework.http.*;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 import java.io.IOException;
 
 
@@ -12,13 +15,16 @@ public class SystemAdapter extends AbstractSystemAdapter {
     private static final Logger logger = LoggerFactory.getLogger(SystemAdapter.class);
     private static JenaKeyValue parameters;
 
+
     @Override
     public void init() throws Exception {
         super.init();
         logger.debug("Init()");
         // Your initialization code comes here...
+
         parameters = new JenaKeyValue.Builder().buildFrom(systemParamModel);
-        logger.debug("SystemModel: "+parameters.encodeToString());
+        logger.debug("SystemModel: " + parameters.encodeToString());
+
         // You can access the RDF model this.systemParamModel to retrieve meta data about this system adapter
     }
 
@@ -26,26 +32,39 @@ public class SystemAdapter extends AbstractSystemAdapter {
     public void receiveGeneratedData(byte[] data) {
         // handle the incoming data as described in the benchmark description
         String dataStr = new String(data);
-        logger.trace("receiveGeneratedData("+new String(data)+"): "+dataStr);
-
-
+        logger.trace("receiveGeneratedData(" + new String(data) + "): " + dataStr);
 
     }
 
     @Override
     public void receiveGeneratedTask(String taskId, byte[] data) {
         // handle the incoming task and create a result
-        String result = "result_"+taskId;
-        logger.trace("receiveGeneratedTask({})->{}",taskId, new String(data));
 
-        // Send the result to the evaluation storage
+        logger.debug("receiveGeneratedTask({})->{}", taskId, new String(data));
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+
+        MultiValueMap<String, Object> map = new LinkedMultiValueMap<String, Object>();
+        map.add("taskId", taskId);
+        map.add("data", data);
+
+        HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<MultiValueMap<String, Object>>(map, headers);
+
+        RestTemplate restTemplate = new RestTemplate();
+
+        ResponseEntity<FCApi> response =
+                restTemplate.exchange("http://127.0.0.1:8080/api/execTask/" + taskId,
+                        HttpMethod.POST, request, FCApi.class);
+
+        FCApi apiResult = response.getBody();
+
         try {
-            logger.trace("sendResultToEvalStorage({})->{}", taskId, result);
-            sendResultToEvalStorage(taskId, result.getBytes());
+            logger.debug("sendResultToEvalStorage({})->{}", taskId, apiResult.getDefactoScore());
+            sendResultToEvalStorage(taskId, String.valueOf(apiResult.getDefactoScore()).getBytes());
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
     @Override

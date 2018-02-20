@@ -46,6 +46,8 @@ public class EvalStorage extends AbstractEvaluationStorage {
         logger.debug("createIterator()");
         String test="123";
 
+        logger.debug("Expected: "+expectedResponses.size()+"\tActual: "+actualResponses.size());
+
         List<ResultPair> ret = new ArrayList<>();
         for(int i = 0; i< expectedResponses.size(); i++)
             ret.add(new ResultPairImpl(expectedResponses.get(i), actualResponses.get(i)));
