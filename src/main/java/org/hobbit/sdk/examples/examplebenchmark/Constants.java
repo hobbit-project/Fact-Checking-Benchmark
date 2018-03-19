@@ -27,4 +27,10 @@ public class Constants {
     public static final String SDK_JAR_FILE_PATH = "target/sdk-example-benchmark-1.0.jar"; //should be packaged will all dependencies (via 'mvn package -DskipTests=true' command)
     public static final String SDK_WORK_DIR_PATH = "/usr/src/"+PROJECT_NAME;
 
+    public static final String EVALUATION_RECALL = "evaluation_recall";
+    public static final String EVALUATION_PRECISION = "evaluation_precision";
+    public static final String EVALUATION_ACCURACY = "evaluation_accuracy";
+    public static final String EVALUATION_ROC_AUC = "evaluation_roc_auc";
+    public static final String EVALUATION_TIME = "evaluation_time";
+
 }

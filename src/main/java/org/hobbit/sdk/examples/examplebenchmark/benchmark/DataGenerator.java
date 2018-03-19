@@ -14,6 +14,7 @@ import java.util.Map;
 
 public class DataGenerator extends AbstractDataGenerator {
     private static final Logger logger = LoggerFactory.getLogger(DataGenerator.class);
+    //TODO files do not load when leaf directory is provided: src/main/resources/factbench/test/correct/award
     private final String factBenchPath = "src/main/resources/factbench/test/correct";
 
     @Override
@@ -29,17 +30,15 @@ public class DataGenerator extends AbstractDataGenerator {
         // Create your data inside this method. You might want to use the
         // id of this data generator and the number of all data generators
         // running in parallel.
+        logger.debug("generateData()");
+
         int dataGeneratorId = getGeneratorId();
         int numberOfGenerators = getNumberOfGenerators();
-
-        logger.debug("generateData()");
 
         logger.info("Loading models");
         Map<String, ArrayList<Model>> factBenchModels = readFiles(factBenchPath);
 
-        // Sending Data
         logger.info("Sending Models to TaskGenerator");
-
         //For each model, send it's data and expected result to the TaskGenerator
         for (Map.Entry<String, ArrayList<Model>> entry : factBenchModels.entrySet()) {
 
@@ -58,6 +57,7 @@ public class DataGenerator extends AbstractDataGenerator {
     private Map<String, ArrayList<Model>> readFiles(String directoryPath) {
 
         Map<String, ArrayList<Model>> map = new HashMap<String, ArrayList<Model>>();
+
         map = walk(map, directoryPath);
         return map;
     }
@@ -79,6 +79,7 @@ public class DataGenerator extends AbstractDataGenerator {
                 }
                 walk(map, f.getAbsolutePath());
             } else {
+
                 if (filePath.endsWith(".ttl")) {
                     ArrayList<Model> models = (ArrayList<Model>) map.get(f.getAbsoluteFile().getParentFile().getAbsolutePath());
                     try {
@@ -114,5 +115,4 @@ public class DataGenerator extends AbstractDataGenerator {
         // Always close the super class after yours!
         super.close();
     }
-
 }

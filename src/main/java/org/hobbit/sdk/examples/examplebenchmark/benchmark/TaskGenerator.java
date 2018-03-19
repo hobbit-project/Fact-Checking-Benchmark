@@ -41,8 +41,7 @@ public class TaskGenerator extends AbstractSequencingTaskGenerator {
 
         // Send the task to the system (and store the timestamp)
         long timestamp = System.currentTimeMillis();
-        RestTemplate restTemplate= new RestTemplate();
-       logger.info("Template({})", restTemplate.toString());
+
         logger.debug("sendTaskToSystemAdapter({})->{}", taskId, dataString[1]);
         sendTaskToSystemAdapter(taskId, dataString[1].getBytes());
 

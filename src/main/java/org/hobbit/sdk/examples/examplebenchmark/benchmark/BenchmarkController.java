@@ -5,6 +5,7 @@ import org.apache.jena.rdf.model.NodeIterator;
 import org.hobbit.core.Commands;
 import org.hobbit.core.components.AbstractBenchmarkController;
 import org.hobbit.sdk.JenaKeyValue;
+import org.hobbit.sdk.examples.examplebenchmark.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,9 +52,10 @@ public class BenchmarkController extends AbstractBenchmarkController {
         // Create evaluation storage
         logger.debug("createEvaluationStorage()");
         //You can use standard evaluation storage (git.project-hobbit.eu:4567/defaulthobbituser/defaultevaluationstorage)
-            //createEvaluationStorage();
+        //createEvaluationStorage();
         //or simplified local-one from the SDK
-        envVariables = (String[]) ArrayUtils.add(DEFAULT_EVAL_STORAGE_PARAMETERS, "HOBBIT_RABBIT_HOST=" + this.rabbitMQHostName);
+       // envVariables = (String[]) ArrayUtils.add(DEFAULT_EVAL_STORAGE_PARAMETERS, "HOBBIT_RABBIT_HOST=" + this.rabbitMQHostName);
+       envVariables = (String[]) org.apache.commons.lang.ArrayUtils.add(DEFAULT_EVAL_STORAGE_PARAMETERS, "ACKNOWLEDGEMENT_FLAG=true");
         this.createEvaluationStorage(EVAL_STORAGE_IMAGE_NAME, envVariables);
 
 
@@ -96,9 +98,13 @@ public class BenchmarkController extends AbstractBenchmarkController {
 
         // Create the evaluation module
 
-        String[] envVariables = new String[]{"key1=value1" };
+        //TODO Update URIs with correct values
+        String[] envVariables = new String[]{Constants.EVALUATION_ACCURACY+"="+ "http://project-hobbit.eu/sdk-dummy-benchmark/Kpi",
+                Constants.EVALUATION_ROC_AUC+"="+ "http://project-hobbit.eu/sdk-dummy-benchmark/Kpi",
+                Constants.EVALUATION_TIME+"="+ "http://project-hobbit.eu/sdk-dummy-benchmark/Kpi",
+                Constants.EVALUATION_RECALL+"="+ "http://project-hobbit.eu/sdk-dummy-benchmark/Kpi",
+                Constants.EVALUATION_PRECISION+"="+ "http://project-hobbit.eu/sdk-dummy-benchmark/Kpi"};
         createEvaluationModule(EVALMODULE_IMAGE_NAME, envVariables);
-
 
         // wait for the evaluation to finish
         waitForEvalComponentsToFinish();

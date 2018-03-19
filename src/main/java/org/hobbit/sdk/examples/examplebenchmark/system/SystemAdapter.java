@@ -8,6 +8,7 @@ import org.springframework.http.*;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import java.util.concurrent.ThreadLocalRandom;
 import java.io.IOException;
 
 
@@ -58,6 +59,7 @@ public class SystemAdapter extends AbstractSystemAdapter {
                         HttpMethod.POST, request, FCApi.class);
 
         FCApi apiResult = response.getBody();
+        //TODO send default exception values when no response is received
 
         try {
             logger.debug("sendResultToEvalStorage({})->{}", taskId, apiResult.getDefactoScore());
@@ -65,6 +67,23 @@ public class SystemAdapter extends AbstractSystemAdapter {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+       /*int randomNum = ThreadLocalRandom.current().nextInt(0, 100 + 1);
+        double confidence = randomNum * 0.01;
+        String value = "";
+
+
+            if(confidence>0.05)
+                value = "false:*:"+String.valueOf(confidence);
+            else
+                value = "true:*:"+String.valueOf(confidence);
+
+        try {
+            logger.info("sendResultToEvalStorage({})->{}", taskId, value);
+            sendResultToEvalStorage(taskId, value.getBytes());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }*/
     }
 
     @Override
