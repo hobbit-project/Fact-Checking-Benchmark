@@ -25,10 +25,10 @@ import java.util.Map;
 public class EvalModule extends AbstractEvaluationModule {
     private static final Logger logger = LoggerFactory.getLogger(EvalModule.class);
 
-    private static int truePositive = 0;
-    private static int falsePositive = 0;
-    private static int trueNegative = 0;
-    private static int falseNegative = 0;
+    private int truePositive = 0;
+    private int falsePositive = 0;
+    private int trueNegative = 0;
+    private int falseNegative = 0;
     private long totalRunTime = 0;
 
     private Model model = ModelFactory.createDefaultModel();
@@ -160,19 +160,19 @@ public class EvalModule extends AbstractEvaluationModule {
     }
 
     //Calculates accuracy using the necessary counters
-    public static double calculateAccuracy() {
+    private double calculateAccuracy() {
         return (truePositive + trueNegative)
                 / (double) (truePositive + trueNegative + falsePositive + falseNegative);
     }
 
     //Calculates precision using the necessary counters (relevantItemsRetrieved / retrievedItems)
-    public static double calculatePrecision() {
+    private double calculatePrecision() {
         return truePositive
                 / (double) (truePositive + falsePositive);
     }
 
     //Calculates recall using the necessary counters (relevantItemsRetrieved / relevantItems)
-    public static double calculateRecall() {
+    private double calculateRecall() {
         return truePositive
                 / (double) (truePositive + falseNegative);
     }
@@ -184,7 +184,7 @@ public class EvalModule extends AbstractEvaluationModule {
         // Always close the super class after yours!
         try {
             super.close();
-        } catch (Exception e) {
+        } catch (Exception ignored) {
 
         }
     }
