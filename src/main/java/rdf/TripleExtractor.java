@@ -2,8 +2,10 @@ package rdf;
 
 import org.apache.jena.rdf.model.*;
 
+import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.nio.charset.StandardCharsets;
 
 /**
  * @author DANISH AHMED on 3/22/2018
@@ -19,13 +21,19 @@ public class TripleExtractor {
     private String predicateUri;
     private String objectUri;
 
-    public TripleExtractor(String fileName) throws FileNotFoundException {
+    private Model simplifiedModel;
+    private String simplifiedData;
+
+    TripleExtractor(String fileName) throws FileNotFoundException {
         Model model = ModelFactory.createDefaultModel();
         model.read(new FileInputStream(fileName), null, "TTL");
 
         setModel(model);
         parseStatements();
         setUris();
+
+        setSimplifiedData();
+        setSimplifiedModel();
     }
 
     private void setUris() {
@@ -38,13 +46,39 @@ public class TripleExtractor {
         this.model = model;
     }
 
+    private void setSimplifiedData() {
+        simplifiedData = String.format("<%s> <%s> ", subjectUri, predicateUri);
+        if (object.resource.isResource())
+            simplifiedData = simplifiedData + String.format("<%s> .", objectUri);
+        else if (object.resource.isLiteral())
+            simplifiedData = simplifiedData + String.format("\"%s\" .", objectUri);
+    }
+
+    private void setSimplifiedModel() {
+        simplifiedModel = ModelFactory.createDefaultModel();
+        simplifiedModel.read(new ByteArrayInputStream(simplifiedData.getBytes()), null, "TTL");
+    }
+
     private void parseStatements() {
         StmtIterator stmtIterator = this.model.listStatements();
         Resource subjectNode = null;
         RDFNode objectNode;
-
+        int statementCount = 0;
         while (stmtIterator.hasNext()) {
             Statement statement = stmtIterator.next();
+
+            if (statementCount == 0) {
+                subjectNode = statement.getSubject();
+                this.subject = new RDFResource(subjectNode.asResource(), model);
+
+                this.predicate = statement.getPredicate();
+
+                objectNode = statement.getObject();
+                if (objectNode.isResource())
+                    this.object = new RDFResource(objectNode.asResource(), model);
+
+                statementCount++;
+            }
 
             // look for starting node
             if (statement.getSubject().getURI().matches("^.*__[0-9]*$")) {
@@ -115,10 +149,9 @@ public class TripleExtractor {
     }
 
     private String getResourceUri(RDFResource resource) {
-        if (resource.owlSameAsList.isEmpty())
-            return resource.uri;
-        else
+        if (!resource.owlSameAsList.isEmpty())
             return RDFResource.getDBpediaUri(resource);
+        return resource.uri;
     }
 
     public static void main(String[] args) throws FileNotFoundException {

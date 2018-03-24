@@ -24,7 +24,7 @@ public class RDFResource {
      */
     RDFResource(Resource resource, Model model) {
         this.resource = resource;
-        this.uri =resource.getURI();
+        this.uri = resource.getURI();
         this.model = model;
 
         // set sameAs resource list
