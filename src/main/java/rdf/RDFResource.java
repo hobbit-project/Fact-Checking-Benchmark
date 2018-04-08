@@ -11,11 +11,13 @@ public class RDFResource {
 
     protected Resource resource;
     protected Model model;
+    protected String label;
     public String uri;
 
     private Property owlSameAsProperty = ResourceFactory.createProperty(Constants.OWL_NAMESPACE + "sameAs");
 
     public List<Resource> owlSameAsList = new ArrayList<Resource>();     // only considering english for now
+    public Map<String, String> langLabelsMap = new HashMap<String, String>();
 
     /**
      * give me FactCheck resource model
@@ -27,8 +29,26 @@ public class RDFResource {
         this.uri = resource.getURI();
         this.model = model;
 
+        // set labels w.r.t language
+        Property labelProperty = ResourceFactory.createProperty(Constants.RDF_SCHEMA_NAMESPACE + "label");
+        NodeIterator labelNodeIterator = this.model.listObjectsOfProperty(this.resource, labelProperty);
+
         // set sameAs resource list
+        getResourceLabel(labelNodeIterator);
         setOwlSameAsList();
+    }
+
+    private void getResourceLabel(NodeIterator nodeIterator) {
+        while (nodeIterator.hasNext()) {
+            RDFNode rdfNode = nodeIterator.nextNode();
+            String lang = rdfNode.asLiteral().getLanguage();
+            String label = rdfNode.asLiteral().getLexicalForm();
+
+            langLabelsMap.put(lang, label);
+            if (lang.equals("en")) {
+                this.label = label;
+            }
+        }
     }
 
     /**

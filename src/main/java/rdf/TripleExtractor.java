@@ -1,11 +1,11 @@
 package rdf;
 
+import org.apache.jena.base.Sys;
 import org.apache.jena.rdf.model.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.nio.charset.StandardCharsets;
 
 /**
  * @author DANISH AHMED on 3/22/2018
@@ -24,7 +24,7 @@ public class TripleExtractor {
     private Model simplifiedModel;
     private String simplifiedData;
 
-    TripleExtractor(String fileName) throws FileNotFoundException {
+    public TripleExtractor(String fileName) throws FileNotFoundException {
         Model model = ModelFactory.createDefaultModel();
         model.read(new FileInputStream(fileName), null, "TTL");
 
@@ -32,7 +32,7 @@ public class TripleExtractor {
         parseStatements();
         setUris();
 
-        setSimplifiedData();
+        setSimplifiedData("1");
         setSimplifiedModel();
     }
 
@@ -46,12 +46,36 @@ public class TripleExtractor {
         this.model = model;
     }
 
-    private void setSimplifiedData() {
-        simplifiedData = String.format("<%s> <%s> ", subjectUri, predicateUri);
+    private void setSimplifiedData(String taskId) {
+
+        simplifiedData = String.format("<http://swc2017.aksw.org/task2/dataset/s-%s> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement> .\n" +
+                "<http://swc2017.aksw.org/task2/dataset/s-%s> <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <%s> .\n" +
+                "<http://swc2017.aksw.org/task2/dataset/s-%s> <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <%s> .\n" +
+                "<http://swc2017.aksw.org/task2/dataset/s-%s> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> "
+                , taskId
+                , taskId, subjectUri
+                , taskId, predicateUri
+                , taskId);
+
         if (object.resource.isResource())
-            simplifiedData = simplifiedData + String.format("<%s> .", objectUri);
+            simplifiedData = simplifiedData + String.format("<%s> .\n", objectUri);
         else if (object.resource.isLiteral())
-            simplifiedData = simplifiedData + String.format("\"%s\" .", objectUri);
+            simplifiedData = simplifiedData + String.format("\"%s\" .\n", objectUri);
+
+        String labels = String.format("<%s> <http://www.w3.org/2000/01/rdf-schema#label> \"%s\"@en .\n" +
+                "<%s> <http://www.w3.org/2000/01/rdf-schema#label> \"%s\"@en .\n"
+                , subjectUri, subject.label
+                , objectUri, object.label);
+        simplifiedData = simplifiedData + labels;
+        System.out.println(simplifiedData);
+    }
+
+    public Model getSimplifiedModel() {
+        return this.simplifiedModel;
+    }
+
+    public String getSimplifiedData() {
+        return this.simplifiedData;
     }
 
     private void setSimplifiedModel() {
