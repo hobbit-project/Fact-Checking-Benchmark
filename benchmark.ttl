@@ -1,9 +1,12 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix hobbit: <http://w3id.org/hobbit/vocab#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix mysets1: <http://w3id.org/mysets1/vocab#> .
+@prefix mysets: <http://w3id.org/mysets1/hobbit/vocab#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
 
 <http://project-hobbit.eu/sdk-dummy-benchmark/benchmark> a hobbit:Benchmark;
-    rdfs:label "Stream machine learning benchmark"@en;
+    rdfs:label "5Stream machine learning benchmark"@en;
     rdfs:comment    "Stream machine learning benchmark"@en;
     hobbit:imageName    "git.project-hobbit.eu:4567/smirnp/sdk-dummy-benchmark";
     hobbit:version "v1.0"@en;
@@ -23,7 +26,14 @@
     hobbit:hasParameter <http://project-hobbit.eu/sdk-dummy-benchmark/format>;
     hobbit:hasParameter <http://project-hobbit.eu/sdk-dummy-benchmark/machineCount>;
     hobbit:hasParameter <http://project-hobbit.eu/sdk-dummy-benchmark/timeoutMinutes>;
-    hobbit:hasAPI <http://project-hobbit.eu/sdk-dummy-benchmark/API>.
+    hobbit:hasAPI <http://project-hobbit.eu/sdk-dummy-benchmark/API>;
+    hobbit:hasParameter	mysets:hasDataset .
+
+mysets:hasDataset	a	hobbit:Parameter, hobbit:FeatureParameter, hobbit:ConfigurableParameter;
+			rdfs:label	"Dataset name"@en;
+			rdfs:comment	"The dataset which should be tested."@en;
+			rdfs:domain	hobbit:Benchmark;
+			rdfs:range	mysets1:Datasets.
 
 <http://project-hobbit.eu/resources/sdk-dummy-benchmark/Kpi> a hobbit:KPI;
     rdfs:range xsd:string.
@@ -38,7 +48,6 @@
     rdfs:range xsd:double.
 
 <http://project-hobbit.eu/resources/sdk-dummy-benchmark/benchmarkMode> a hobbit:ConfigurableParameter, hobbit:FeatureParameter;
-	rdfs:label "Benchmark mode. 'static' or 'dynamic:x:y' only"@en;
 	rdfs:label "Benchmark mode. 'static' or 'dynamic:x:y' only"@en;
     rdfs:range xsd:string;
     hobbit:defaultValue "static"^^xsd:string .
@@ -102,3 +111,21 @@
     rdfs:comment "Timeout (min.) -1 meaning no timeout"@en;
     rdfs:range xsd:int;
     hobbit:defaultValue "-1"^^xsd:int .
+
+mysets1:Datasets a rdfs:Class, owl:Class .
+
+mysets1:CorrectData a mysets1:Datasets;
+		rdfs:label "Correct Data"@en;
+		rdfs:comment "using the Correct Dataset"@en .
+
+mysets1:WrongData a mysets1:Datasets;
+		rdfs:label "Wrong Data"@en;
+		rdfs:comment "using the Wrong Dataset"@en .
+
+mysets1:TrainDataSet a mysets1:Datasets;
+		rdfs:label "Train Data Set"@en;
+		rdfs:comment "using the Train Dataset"@en .
+
+mysets1:TestDataSet a mysets1:Datasets;
+		rdfs:label "Test Data Set"@en;
+		rdfs:comment "using the Test Dataset"@en .
