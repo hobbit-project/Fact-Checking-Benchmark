@@ -25,6 +25,9 @@ public class IniConfig {
     public String trainCorrectDirectory;
     public String trainWrongDirectory;
 
+    public String trainDirectory;
+    public String testDirectory;
+
     /**
      * reading configuration from factcheckBenchmark.ini
      * and set variables that are globally required
@@ -34,6 +37,9 @@ public class IniConfig {
         String resourceDirectory = "src/main/resources/";
         String configFile = "factcheckBenchmark.ini";
         Ini configIni = new Ini(new File(resourceDirectory + configFile));
+
+        testDirectory = configIni.get("data", "test");
+        trainDirectory = configIni.get("data", "train");
 
         testCorrectDirectory = configIni.get("dataTest", "correct");
         testWrongDirectory = configIni.get("dataTest", "wrong");
