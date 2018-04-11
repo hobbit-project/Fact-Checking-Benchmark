@@ -31,8 +31,8 @@ public class TripleExtractor {
         parseStatements();
         setUris();
 
-        setSimplifiedData("1");
-        setSimplifiedModel();
+        setSimplifiedData();
+//        setSimplifiedModel();
     }
 
     private void setUris() {
@@ -45,16 +45,14 @@ public class TripleExtractor {
         this.model = model;
     }
 
-    private void setSimplifiedData(String taskId) {
+    private void setSimplifiedData() {
 
-        simplifiedData = String.format("<http://swc2017.aksw.org/task2/dataset/s-%s> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement> .\n" +
-                "<http://swc2017.aksw.org/task2/dataset/s-%s> <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <%s> .\n" +
-                "<http://swc2017.aksw.org/task2/dataset/s-%s> <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <%s> .\n" +
-                "<http://swc2017.aksw.org/task2/dataset/s-%s> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> "
-                , taskId
-                , taskId, subjectUri
-                , taskId, predicateUri
-                , taskId);
+        simplifiedData = String.format("<http://swc2017.aksw.org/task/dataset/s> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement> .\n" +
+                "<http://swc2017.aksw.org/task/dataset/s> <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <%s> .\n" +
+                "<http://swc2017.aksw.org/task/dataset/s> <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <%s> .\n" +
+                "<http://swc2017.aksw.org/task/dataset/s> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> "
+                , subjectUri
+                , predicateUri);
 
         if (object.resource.isResource())
             simplifiedData = simplifiedData + String.format("<%s> .\n", objectUri);
@@ -66,7 +64,6 @@ public class TripleExtractor {
                 , subjectUri, subject.label
                 , objectUri, object.label);
         simplifiedData = simplifiedData + labels;
-        System.out.println(simplifiedData);
     }
 
     public Model getSimplifiedModel() {
@@ -179,8 +176,9 @@ public class TripleExtractor {
 
     public static void main(String[] args) throws FileNotFoundException {
         TripleExtractor tripleExtractor = new TripleExtractor("Einstein.ttl");
-        System.out.println(tripleExtractor.subjectUri);
-        System.out.println(tripleExtractor.predicate);
-        System.out.println(tripleExtractor.objectUri);
+//        System.out.println(tripleExtractor.subjectUri);
+//        System.out.println(tripleExtractor.predicate);
+//        System.out.println(tripleExtractor.objectUri);
+        System.out.println(tripleExtractor.simplifiedData);
     }
 }
