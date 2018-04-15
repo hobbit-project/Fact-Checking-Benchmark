@@ -4,7 +4,7 @@ This repository contains all types of [HOBBIT-compatible components](https://git
 
 The repository may be cloned and used as HOBBIT-compatible basis for the future project (benchmark or system). The tests allow developers to debug components either as pure java codes or being packaged into docker containers. Fully tested docker images may be uploaded and executed in the online platform without any modifications.
 
-The added value of the Java SDK against standart HOBBIT approach decribed [here](https://github.com/hobbit-project/java-sdk-example/blob/master/SDK_vs_Standard_Way.pdf).
+The added value of the Java SDK against standard HOBBIT approach decribed [here](https://github.com/hobbit-project/java-sdk-example/blob/master/SDK_vs_Standard_Way.pdf).
 
 # Usage
 ## Before you start
@@ -14,6 +14,7 @@ The added value of the Java SDK against standart HOBBIT approach decribed [here]
 4) Add the `127.0.0.1 rabbit` line to `/etc/hosts` (Linux) or `C:\Windows\System32\drivers\etc\hosts` (Windows)
 5) Clone this repository (`git clone https://github.com/hobbit-project/java-sdk-example.git`)
 6) Make sure that hobbit-java-sdk dependency (declared in [pom.xml](https://github.com/hobbit-project/java-sdk-example/blob/master/pom.xml)) is installed into your local maven repository (or install it by `mvn validate`)
+7) Clone the test and train data from (https://github.com/SmartDataAnalytics/FactBench) to data/factbench/ directory. 
 
 ## How to create a benchmark
 1) Please find the basic benchmark component implementations in the [sources filder](https://github.com/hobbit-project/java-sdk-example/tree/master/src/main/java/org/hobbit/sdk/examples/examplebenchmark/benchmark). You may extend the components with logic of your benchmark and debug the components as pure java codes by running the `checkHealth()` method from [ExampleBenchmarkTest](https://github.com/hobbit-project/java-sdk-example/blob/master/src/test/java/org/hobbit/sdk/examples/ExampleBenchmarkTest.java)). You may specify input parameters models for benchmark and system you are running.

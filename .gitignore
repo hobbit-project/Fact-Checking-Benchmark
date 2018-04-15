@@ -104,5 +104,8 @@ buildNumber.properties
 # Avoid ignoring Maven wrapper jar file (.jar files are usually ignored)
 !/.mvn/wrapper/maven-wrapper.jar
 
+# To preserve empty folder structure for data/factbench/ directory
+!.gitignore
 
 # End of https://www.gitignore.io/api/java,maven,intellij
+.idea/
