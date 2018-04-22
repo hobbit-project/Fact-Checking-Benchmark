@@ -8,17 +8,23 @@ import java.util.*;
 /**
  * @author DANISH AHMED on 4/15/2018
  */
-public class DefactoResource {
+class DefactoResource {
     private Resource resource;
     private Model model;
-    public Map<String,String> labels = new HashMap<String,String>();
-    public Map<String,Set<String>> altLabels = new HashMap<String,Set<String>>();
-    public List<Resource> owlSameAs = new ArrayList<Resource>();
+    public Map<String, String> labels = new HashMap<String, String>();
     private String uri;
 
-    public  DefactoResource(Resource resource, Model model, String uri){
+    DefactoResource(Resource resource, Model model, String uri){
         this.resource = resource;
         this.model = model;
         this.uri = uri;
+    }
+
+    Resource getResource() {
+        return this.resource;
+    }
+
+    Map<String, String> getLabels() {
+        return this.labels;
     }
 }

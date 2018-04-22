@@ -1,7 +1,6 @@
 package org.hobbit.sdk.examples.examplebenchmark.system.preprocessing;
 
 import org.apache.jena.rdf.model.*;
-import rdf.Constants;
 
 import java.io.ByteArrayInputStream;
 
@@ -9,11 +8,34 @@ import java.io.ByteArrayInputStream;
  * @author DANISH AHMED on 4/15/2018
  */
 public class FCpreprocessor {
+    private String data;
+    private String fileTrace;
     private DefactoModel defactoModel;
+    private Model modelFC;
+    private Model modelISWC;
 
-    public FCpreprocessor(String data) {
+    public FCpreprocessor(String data, String taskId, String fileTrace) {
+        this.data = data;
+        this.fileTrace = fileTrace;
         Model modelISWC = createModel(data);
-        init(modelISWC);
+        setModelISWC(modelISWC);
+        init(modelISWC, taskId);
+    }
+
+    public String getData() {
+        return this.data;
+    }
+
+    public String getFileTrace() {
+        return fileTrace;
+    }
+
+    private void setModelISWC(Model model) {
+        this.modelISWC = model;
+    }
+
+    private void setModelFC(Model model) {
+        this.modelFC = model;
     }
 
     private Model createModel(String data) {
@@ -47,6 +69,18 @@ public class FCpreprocessor {
         this.defactoModel = new DefactoModel(model, subject, object, predicate, taskId);
     }
 
+    public DefactoModel getDefactoModel() {
+        return this.defactoModel;
+    }
+
+    public Model getModelISWC() {
+        return this.modelISWC;
+    }
+
+    public Model getModelFC() {
+        return this.modelFC;
+    }
+
     private DefactoResource setDefactoResource (Model modelISWC, Model modelFC, Resource resourceNode) {
         DefactoResource defactoResource = new DefactoResource(resourceNode, modelFC, resourceNode.getURI());
         Literal literal = getLabel(modelISWC, resourceNode);
@@ -55,29 +89,18 @@ public class FCpreprocessor {
         return defactoResource;
     }
 
-    private void init(Model modelISWC) {
+    private void init(Model modelISWC, String taskId) {
         Resource subNode = getResource(modelISWC, Constants.RDF_SYNTAX_NAMESPACE + "subject");
         RDFNode predNode = getResource(modelISWC, Constants.RDF_SYNTAX_NAMESPACE + "predicate");
         Resource objNode = getResource(modelISWC, Constants.RDF_SYNTAX_NAMESPACE + "object");
 
         String dataFC = String.format("<%s> <%s> <%s> .", subNode, predNode, objNode);
         Model model = createModel(dataFC);
+        setModelFC(model);
 
         DefactoResource subject = setDefactoResource(modelISWC, model, subNode);
         DefactoResource object = setDefactoResource(modelISWC, model, objNode);
 
-        setDefactoModel(model, subject, object, predNode, "t1");
-    }
-
-    public static void main(String[] args) {
-        String data = "" +
-                "<http://swc2017.aksw.org/task/dataset/s> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement> .\n" +
-                "<http://swc2017.aksw.org/task/dataset/s> <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://dbpedia.org/resource/Albert_Einstein> .\n" +
-                "<http://swc2017.aksw.org/task/dataset/s> <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://dbpedia.org/ontology/award> .\n" +
-                "<http://swc2017.aksw.org/task/dataset/s> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <http://dbpedia.org/resource/Nobel_Prize_in_Physics> .\n" +
-                "<http://dbpedia.org/resource/Albert_Einstein> <http://www.w3.org/2000/01/rdf-schema#label> \"Albert Einstein\"@en .\n" +
-                "<http://dbpedia.org/resource/Nobel_Prize_in_Physics> <http://www.w3.org/2000/01/rdf-schema#label> \"Nobel Prize in Physics\"@en .";
-
-        new FCpreprocessor(data);
+        setDefactoModel(model, subject, object, predNode, taskId);
     }
 }

@@ -36,12 +36,13 @@ public class TaskGenerator extends AbstractSequencingTaskGenerator {
         String taskId = getNextTaskId();
 
         //Split data using separator to extract query and expected
-        String REGEX_SEPARATOR = ":\\*:";
+        final String REGEX_SEPARATOR = ":\\*:";
         String[] dataString = new String(data).split(REGEX_SEPARATOR);
-        dataString[1] = dataString[1].replaceAll("task/dataset/s", taskId + "/" + dataString[0]);
+        dataString[1] = dataString[1].replaceAll("task/dataset/s", taskId + "/dataset/" + dataString[0]);
 
         // Send the task to the system (and store the timestamp)
         long timestamp = System.currentTimeMillis();
+        taskId = taskId + ":*:" + dataString[0];
 
         logger.debug("sendTaskToSystemAdapter({})->{}", taskId, dataString[1]);
         sendTaskToSystemAdapter(taskId, dataString[1].getBytes());

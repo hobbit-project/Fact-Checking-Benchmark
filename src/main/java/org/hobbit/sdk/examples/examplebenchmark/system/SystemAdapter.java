@@ -2,6 +2,7 @@ package org.hobbit.sdk.examples.examplebenchmark.system;
 
 import org.hobbit.core.components.AbstractSystemAdapter;
 import org.hobbit.sdk.JenaKeyValue;
+import org.hobbit.sdk.examples.examplebenchmark.system.preprocessing.FCpreprocessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.*;
@@ -41,7 +42,14 @@ public class SystemAdapter extends AbstractSystemAdapter {
     public void receiveGeneratedTask(String taskId, byte[] data) {
         // handle the incoming task and create a result
 
+        final String REGEX_SEPARATOR = ":\\*:";
+        String[] split = taskId.split(REGEX_SEPARATOR);
+        taskId = split[0];
+        String fileTrace = split[1];
+
         logger.debug("receiveGeneratedTask({})->{}", taskId, new String(data));
+
+        FCpreprocessor fCpreprocessor = new FCpreprocessor(new String(data), taskId, fileTrace);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
