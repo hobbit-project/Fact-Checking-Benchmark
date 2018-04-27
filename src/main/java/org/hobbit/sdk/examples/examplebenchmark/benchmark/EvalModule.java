@@ -1,6 +1,5 @@
 package org.hobbit.sdk.examples.examplebenchmark.benchmark;
 
-import mloss.roc.Curve;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.vocabulary.RDF;
@@ -119,9 +118,9 @@ public class EvalModule extends AbstractEvaluationModule {
         // write them into a Jena model and send it to the benchmark controller.
 
         //Calculate AUC and obtain the points for the ROC curve
-        Curve rocCurve = new Curve.PrimitivesBuilder().predicteds(confidenceScores).actuals(trueLabels).build();
+        /*Curve rocCurve = new Curve.PrimitivesBuilder().predicteds(confidenceScores).actuals(trueLabels).build();
         double roc_auc = rocCurve.rocArea();
-        double[][] rocPoints = rocCurve.rocPoints();
+        double[][] rocPoints = rocCurve.rocPoints();*/
 
         //Calculate accuracy, precision and recall
         double accuracy = calculateAccuracy();
@@ -137,9 +136,9 @@ public class EvalModule extends AbstractEvaluationModule {
         logger.debug(Constants.EVALUATION_ACCURACY + " added to model: " + accuracy);
 
         //ROC/AUC literal
-        Literal rocAucLiteral = model.createTypedLiteral(roc_auc, XSDDatatype.XSDdouble);
+        /*Literal rocAucLiteral = model.createTypedLiteral(roc_auc, XSDDatatype.XSDdouble);
         model.add(experimentResource, EVAL_ROC_AUC, rocAucLiteral);
-        logger.debug(Constants.EVALUATION_ROC_AUC + " added to model: " + roc_auc);
+        logger.debug(Constants.EVALUATION_ROC_AUC + " added to model: " + roc_auc);*/
 
         //Runtime literal
         Literal timeLiteral = model.createTypedLiteral(totalRunTime, XSDDatatype.XSDlong);
