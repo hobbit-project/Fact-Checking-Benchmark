@@ -9,7 +9,7 @@ import org.springframework.http.*;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
-import java.util.concurrent.ThreadLocalRandom;
+
 import java.io.IOException;
 
 
@@ -55,23 +55,23 @@ public class SystemAdapter extends AbstractSystemAdapter {
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
         MultiValueMap<String, Object> map = new LinkedMultiValueMap<String, Object>();
+        map.add("fCpreprocessor", fCpreprocessor);
         map.add("taskId", taskId);
-        map.add("data", data);
 
         HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<MultiValueMap<String, Object>>(map, headers);
 
         RestTemplate restTemplate = new RestTemplate();
 
-        ResponseEntity<FCApi> response =
+        ResponseEntity<FactCheckResponse> response =
                 restTemplate.exchange("http://127.0.0.1:8080/api/execTask/" + taskId,
-                        HttpMethod.POST, request, FCApi.class);
+                        HttpMethod.POST, request, FactCheckResponse.class);
 
-        FCApi apiResult = response.getBody();
+        FactCheckResponse apiResult = response.getBody();
         //TODO send default exception values when no response is received
 
         try {
-            logger.debug("sendResultToEvalStorage({})->{}", taskId, apiResult.getDefactoScore());
-            sendResultToEvalStorage(taskId, String.valueOf(apiResult.getDefactoScore()).getBytes());
+            logger.debug("sendResultToEvalStorage({})->{}", taskId, apiResult.getTruthValue());
+            sendResultToEvalStorage(taskId, String.valueOf(apiResult.getTruthValue()).getBytes());
         } catch (IOException e) {
             e.printStackTrace();
         }
