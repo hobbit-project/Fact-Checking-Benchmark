@@ -62,11 +62,11 @@ public class SystemAdapter extends AbstractSystemAdapter {
 
         RestTemplate restTemplate = new RestTemplate();
 
-        ResponseEntity<FactCheckResponse> response =
+        ResponseEntity<FactCheckHobbitResponse> response =
                 restTemplate.exchange("http://127.0.0.1:8080/api/execTask/" + taskId,
-                        HttpMethod.POST, request, FactCheckResponse.class);
+                        HttpMethod.POST, request, FactCheckHobbitResponse.class);
 
-        FactCheckResponse apiResult = response.getBody();
+        FactCheckHobbitResponse apiResult = response.getBody();
         //TODO send default exception values when no response is received
 
         try {
