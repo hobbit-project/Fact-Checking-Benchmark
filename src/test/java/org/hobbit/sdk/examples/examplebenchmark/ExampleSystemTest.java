@@ -4,31 +4,29 @@ import org.hobbit.core.components.Component;
 import org.hobbit.sdk.ComponentsExecutor;
 import org.hobbit.sdk.EnvironmentVariablesWrapper;
 import org.hobbit.sdk.JenaKeyValue;
-import org.hobbit.sdk.docker.AbstractDockerizer;
 import org.hobbit.sdk.docker.RabbitMqDockerizer;
-import org.hobbit.sdk.docker.builders.*;
 import org.hobbit.sdk.docker.builders.PullBasedDockersBuilder;
 import org.hobbit.sdk.docker.builders.hobbit.*;
+import org.hobbit.sdk.examples.examplebenchmark.system.container.DatabaseDockersBuilder;
+import org.hobbit.sdk.examples.examplebenchmark.system.container.FactcheckDockersBuilder;
+import org.hobbit.sdk.examples.examplebenchmark.system.container.MultipleCommandsReaction;
 import org.hobbit.sdk.examples.examplebenchmark.system.SystemAdapter;
 import org.hobbit.sdk.utils.CommandQueueListener;
-import org.hobbit.sdk.utils.commandreactions.MultipleCommandsReaction;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Date;
 
-import static org.hobbit.sdk.CommonConstants.*;
+import static org.hobbit.sdk.CommonConstants.EXPERIMENT_URI;
 import static org.hobbit.sdk.examples.examplebenchmark.Constants.*;
 
 
 /**
  * @author Pavel Smirnov
- *
+ * <p>
  * This test shows how to debug your system under already published benchmark images
  * if docker images of benchmarkController components are available online
- *
- *
  */
 
 
@@ -39,14 +37,15 @@ public class ExampleSystemTest extends EnvironmentVariablesWrapper {
     private CommandQueueListener commandQueueListener;
 
 
-
-
     BenchmarkDockerBuilder benchmarkBuilder;
     DataGenDockerBuilder dataGeneratorBuilder;
     TaskGenDockerBuilder taskGeneratorBuilder;
     EvalStorageDockerBuilder evalStorageBuilder;
     SystemAdapterDockerBuilder systemAdapterBuilder;
     EvalModuleDockerBuilder evalModuleBuilder;
+    DatabaseDockersBuilder databaseBuilder;
+
+    FactcheckDockersBuilder factcheckBuilder;
 
 
     public void init(boolean useCachedImages) throws Exception {
@@ -58,6 +57,9 @@ public class ExampleSystemTest extends EnvironmentVariablesWrapper {
         evalModuleBuilder = new EvalModuleDockerBuilder(new PullBasedDockersBuilder(EVALMODULE_IMAGE_NAME));
 
         systemAdapterBuilder = new SystemAdapterDockerBuilder(new ExampleDockersBuilder(SystemAdapter.class, SYSTEM_IMAGE_NAME).useCachedImage(useCachedImages));
+
+        factcheckBuilder = new FactcheckDockersBuilder("factcheck-dockerizer");
+        databaseBuilder = new DatabaseDockersBuilder("database-dockerizer");
 
     }
 
@@ -87,9 +89,9 @@ public class ExampleSystemTest extends EnvironmentVariablesWrapper {
 
         rabbitMqDockerizer = RabbitMqDockerizer.builder().build();
 
-        setupCommunicationEnvironmentVariables(rabbitMqDockerizer.getHostName(), "session_"+String.valueOf(new Date().getTime()));
+        setupCommunicationEnvironmentVariables(rabbitMqDockerizer.getHostName(), "session_" + String.valueOf(new Date().getTime()));
         setupBenchmarkEnvironmentVariables(EXPERIMENT_URI, createBenchmarkParameters());
-        setupGeneratorEnvironmentVariables(1,1);
+        setupGeneratorEnvironmentVariables(1, 1);
         setupSystemEnvironmentVariables(SYSTEM_URI, createSystemParameters());
 
         commandQueueListener = new CommandQueueListener();
@@ -104,15 +106,21 @@ public class ExampleSystemTest extends EnvironmentVariablesWrapper {
         Component evalModule = evalModuleBuilder.build();
         Component systemAdapter = new SystemAdapter();
 
-        if(dockerize)
+        Component database = databaseBuilder.build();
+        Component factcheck = factcheckBuilder.build();
+
+        if (dockerize)
             systemAdapter = systemAdapterBuilder.build();
 
         commandQueueListener.setCommandReactions(
                 new MultipleCommandsReaction(componentsExecutor, commandQueueListener)
                         .dataGenerator(dataGen).dataGeneratorImageName(dataGeneratorBuilder.getImageName())
+                        .database(database).databaseImageName(databaseBuilder.getImageName())
+                        .factcheck(factcheck).factcheckImageName(factcheckBuilder.getImageName())
                         .taskGenerator(taskGen).taskGeneratorImageName(taskGeneratorBuilder.getImageName())
                         .evalStorage(evalStorage).evalStorageImageName(evalStorageBuilder.getImageName())
                         .evalModule(evalModule).evalModuleImageName(evalModuleBuilder.getImageName())
+                        // .databaseContainerId(databaseBuilder.getImageName())
                         .systemContainerId(systemAdapterBuilder.getImageName())
         );
 
@@ -120,7 +128,10 @@ public class ExampleSystemTest extends EnvironmentVariablesWrapper {
         commandQueueListener.waitForInitialisation();
 
         componentsExecutor.submit(benchmarkController);
+        componentsExecutor.submit(database, databaseBuilder.getImageName());
+        componentsExecutor.submit(factcheck, factcheckBuilder.getImageName());
         componentsExecutor.submit(systemAdapter, systemAdapterBuilder.getImageName());
+
 
         commandQueueListener.waitForTermination();
 
@@ -131,13 +142,13 @@ public class ExampleSystemTest extends EnvironmentVariablesWrapper {
 
     public JenaKeyValue createBenchmarkParameters() {
         JenaKeyValue kv = new JenaKeyValue();
-        kv.setValue(BENCHMARK_URI+"/param1", "value1");
+        kv.setValue(BENCHMARK_URI + "/param1", "value1");
         return kv;
     }
 
-    private static JenaKeyValue createSystemParameters(){
+    private static JenaKeyValue createSystemParameters() {
         JenaKeyValue kv = new JenaKeyValue();
-        kv.setValue(SYSTEM_URI+"/param1", "value1");
+        kv.setValue(SYSTEM_URI + "/param1", "value1");
         return kv;
     }
 

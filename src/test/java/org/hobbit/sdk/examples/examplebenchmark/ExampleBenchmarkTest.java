@@ -4,14 +4,13 @@ import org.hobbit.core.components.Component;
 import org.hobbit.sdk.ComponentsExecutor;
 import org.hobbit.sdk.EnvironmentVariablesWrapper;
 import org.hobbit.sdk.JenaKeyValue;
-import org.hobbit.sdk.docker.AbstractDockerizer;
 import org.hobbit.sdk.docker.RabbitMqDockerizer;
 import org.hobbit.sdk.docker.builders.*;
 import org.hobbit.sdk.docker.builders.hobbit.*;
 import org.hobbit.sdk.examples.examplebenchmark.benchmark.*;
 import org.hobbit.sdk.examples.examplebenchmark.system.SystemAdapter;
 import org.hobbit.sdk.utils.CommandQueueListener;
-import org.hobbit.sdk.utils.commandreactions.MultipleCommandsReaction;
+import org.hobbit.sdk.examples.examplebenchmark.system.container.MultipleCommandsReaction;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -37,6 +36,8 @@ public class ExampleBenchmarkTest extends EnvironmentVariablesWrapper {
     EvalStorageDockerBuilder evalStorageBuilder;
     SystemAdapterDockerBuilder systemAdapterBuilder;
     EvalModuleDockerBuilder evalModuleBuilder;
+    PullBasedDockersBuilder databaseBuilder;
+
 
 
 
@@ -50,6 +51,9 @@ public class ExampleBenchmarkTest extends EnvironmentVariablesWrapper {
 
         systemAdapterBuilder = new SystemAdapterDockerBuilder(new ExampleDockersBuilder(SystemAdapter.class, SYSTEM_IMAGE_NAME).useCachedImage(useCachedImage));
         evalModuleBuilder = new EvalModuleDockerBuilder(new ExampleDockersBuilder(EvalModule.class, EVALMODULE_IMAGE_NAME).useCachedImage(useCachedImage));
+      /*  databaseBuilder = new PullBasedDockersBuilder("webserver:latest");
+        databaseBuilder.addEnvironmentVariable("MYSQL_ROOT_PASSWORD","12345");
+        databaseBuilder.addEnvironmentVariable("HOBBIT_CONTAINER_NAME","dbpedia");*/
     }
 
 
@@ -64,6 +68,7 @@ public class ExampleBenchmarkTest extends EnvironmentVariablesWrapper {
         evalStorageBuilder.build().prepareImage();
         evalModuleBuilder.build().prepareImage();
         systemAdapterBuilder.build().prepareImage();
+      //  databaseBuilder.build().prepareImage();
     }
 
     @Test
@@ -95,6 +100,7 @@ public class ExampleBenchmarkTest extends EnvironmentVariablesWrapper {
         Component evalStorage = new EvalStorage();
         Component systemAdapter = new SystemAdapter();
         Component evalModule = new EvalModule();
+        Component database = databaseBuilder.build();
 
         if(dockerized) {
 
@@ -117,6 +123,7 @@ public class ExampleBenchmarkTest extends EnvironmentVariablesWrapper {
                         .dataGenerator(dataGen).dataGeneratorImageName(dataGeneratorBuilder.getImageName())
                         .taskGenerator(taskGen).taskGeneratorImageName(taskGeneratorBuilder.getImageName())
                         .evalStorage(evalStorage).evalStorageImageName(evalStorageBuilder.getImageName())
+                        .database(database).databaseImageName(databaseBuilder.getImageName())
                         .evalModule(evalModule).evalModuleImageName(evalModuleBuilder.getImageName())
                         .systemContainerId(systemAdapterBuilder.getImageName())
         );
