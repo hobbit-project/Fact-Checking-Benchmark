@@ -1,5 +1,6 @@
 package org.hobbit.sdk.examples.examplebenchmark.system;
 
+import org.hobbit.core.Constants;
 import org.hobbit.core.components.AbstractSystemAdapter;
 import org.hobbit.sdk.JenaKeyValue;
 import org.hobbit.sdk.examples.examplebenchmark.system.api.Client;
@@ -27,6 +28,34 @@ public class SystemAdapter extends AbstractSystemAdapter {
 
         parameters = new JenaKeyValue.Builder().buildFrom(systemParamModel);
         logger.debug("SystemModel: " + parameters.encodeToString());
+
+        //Create factcheck-database container
+        String databaseContainer = createContainer("factcheck-mysql", org.hobbit.core.Constants.CONTAINER_TYPE_DATABASE,
+                new String[]{"HOBBIT_RABBIT_HOST=" + (String) System.getenv().get("HOBBIT_RABBIT_HOST"),
+                        "HOBBIT_SESSION_ID=" + (String) System.getenv().get("HOBBIT_SESSION_ID"),
+                        "SYSTEM_PARAMETERS_MODEL=" + (String) System.getenv().get("SYSTEM_PARAMETERS_MODEL"),
+                        "HOBBIT_RABBIT_HOST=" + (String) System.getenv().get("HOBBIT_RABBIT_HOST"),
+                        "HOBBIT_RABBIT_HOST=" + (String) System.getenv().get("HOBBIT_RABBIT_HOST")});
+
+
+        if (databaseContainer.isEmpty()){
+            logger.debug("Error while creating database container {}", databaseContainer);
+            throw new Exception("Database container not created");
+        }
+        else
+            logger.debug("Database container created {}", databaseContainer);
+
+        //Create factcheck-api container
+        String factcheckContainer = createContainer("factcheck-api",Constants.CONTAINER_TYPE_SYSTEM,
+                new String[]{
+                        "HOBBIT_CONTAINER_NAME=dbpedia"});
+
+        if (factcheckContainer.isEmpty()){
+            logger.debug("Error while creating API container {}", factcheckContainer);
+            throw new Exception("API container not created");
+        }
+        else
+            logger.debug("factcheck-api container created {}", factcheckContainer);
 
         // You can access the RDF model this.systemParamModel to retrieve meta data about this system adapter
     }

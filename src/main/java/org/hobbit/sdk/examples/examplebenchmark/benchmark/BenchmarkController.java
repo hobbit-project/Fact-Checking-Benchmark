@@ -54,8 +54,8 @@ public class BenchmarkController extends AbstractBenchmarkController {
         //You can use standard evaluation storage (git.project-hobbit.eu:4567/defaulthobbituser/defaultevaluationstorage)
         //createEvaluationStorage();
         //or simplified local-one from the SDK
-       // envVariables = (String[]) ArrayUtils.add(DEFAULT_EVAL_STORAGE_PARAMETERS, "HOBBIT_RABBIT_HOST=" + this.rabbitMQHostName);
-       envVariables = (String[]) org.apache.commons.lang.ArrayUtils.add(DEFAULT_EVAL_STORAGE_PARAMETERS, "ACKNOWLEDGEMENT_FLAG=true");
+       envVariables = (String[]) ArrayUtils.add(DEFAULT_EVAL_STORAGE_PARAMETERS, "HOBBIT_RABBIT_HOST=" + this.rabbitMQHostName);
+       envVariables = (String[]) org.apache.commons.lang.ArrayUtils.add(envVariables, "ACKNOWLEDGEMENT_FLAG=true");
         this.createEvaluationStorage(EVAL_STORAGE_IMAGE_NAME, envVariables);
 
 
