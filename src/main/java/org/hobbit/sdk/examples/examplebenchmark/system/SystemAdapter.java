@@ -2,6 +2,7 @@ package org.hobbit.sdk.examples.examplebenchmark.system;
 
 import org.hobbit.core.components.AbstractSystemAdapter;
 import org.hobbit.sdk.JenaKeyValue;
+import org.hobbit.sdk.examples.examplebenchmark.system.api.Client;
 import org.hobbit.sdk.examples.examplebenchmark.system.preprocessing.FCpreprocessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,29 +50,20 @@ public class SystemAdapter extends AbstractSystemAdapter {
 
         logger.debug("receiveGeneratedTask({})->{}", taskId, new String(data));
 
-        FCpreprocessor fCpreprocessor = new FCpreprocessor(new String(data), taskId, fileTrace);
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-
+        String url = "http://localhost:8080/api/hobbitTask/" + taskId;
         MultiValueMap<String, Object> map = new LinkedMultiValueMap<String, Object>();
-        map.add("fCpreprocessor", fCpreprocessor);
-        map.add("taskId", taskId);
+        map.add("dataISWC", data);
+        map.add("fileTrace", fileTrace);
 
-        HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<MultiValueMap<String, Object>>(map, headers);
+        Client client = new Client(map, MediaType.MULTIPART_FORM_DATA, url);
+        ResponseEntity<FactCheckHobbitResponse> response = client.getResponse(HttpMethod.POST);
+        FactCheckHobbitResponse result = response.getBody();
 
-        RestTemplate restTemplate = new RestTemplate();
-
-        ResponseEntity<FactCheckHobbitResponse> response =
-                restTemplate.exchange("http://127.0.0.1:8080/api/execTask/" + taskId,
-                        HttpMethod.POST, request, FactCheckHobbitResponse.class);
-
-        FactCheckHobbitResponse apiResult = response.getBody();
         //TODO send default exception values when no response is received
 
         try {
-            logger.debug("sendResultToEvalStorage({})->{}", taskId, apiResult.getTruthValue());
-            sendResultToEvalStorage(taskId, String.valueOf(apiResult.getTruthValue()).getBytes());
+            logger.debug("sendResultToEvalStorage({})->{}", taskId, result.getTruthValue());
+            sendResultToEvalStorage(taskId, String.valueOf(result.getTruthValue()).getBytes());
         } catch (IOException e) {
             e.printStackTrace();
         }
