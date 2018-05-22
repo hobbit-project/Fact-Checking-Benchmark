@@ -9,7 +9,7 @@ import org.hobbit.sdk.docker.builders.PullBasedDockersBuilder;
 import org.hobbit.sdk.docker.builders.hobbit.*;
 import org.hobbit.sdk.examples.examplebenchmark.system.container.DatabaseDockersBuilder;
 import org.hobbit.sdk.examples.examplebenchmark.system.container.FactcheckDockersBuilder;
-import org.hobbit.sdk.examples.examplebenchmark.system.container.MultipleCommandsReaction;
+import org.hobbit.sdk.MultipleCommandsReaction;
 import org.hobbit.sdk.examples.examplebenchmark.system.SystemAdapter;
 import org.hobbit.sdk.utils.CommandQueueListener;
 import org.junit.Assert;
@@ -17,6 +17,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Date;
+import java.util.Objects;
 
 import static org.hobbit.sdk.CommonConstants.EXPERIMENT_URI;
 import static org.hobbit.sdk.examples.examplebenchmark.Constants.*;
@@ -68,6 +69,8 @@ public class ExampleSystemTest extends EnvironmentVariablesWrapper {
     public void buildImages() throws Exception {
         init(false);
         systemAdapterBuilder.build().prepareImage();
+        databaseBuilder.build().prepareImage();
+        factcheckBuilder.build().prepareImage();;
     }
 
     @Test
@@ -107,6 +110,7 @@ public class ExampleSystemTest extends EnvironmentVariablesWrapper {
         Component systemAdapter = new SystemAdapter();
 
         Component database = databaseBuilder.build();
+        Objects.nonNull(database);
         Component factcheck = factcheckBuilder.build();
 
         if (dockerize)
@@ -120,7 +124,6 @@ public class ExampleSystemTest extends EnvironmentVariablesWrapper {
                         .taskGenerator(taskGen).taskGeneratorImageName(taskGeneratorBuilder.getImageName())
                         .evalStorage(evalStorage).evalStorageImageName(evalStorageBuilder.getImageName())
                         .evalModule(evalModule).evalModuleImageName(evalModuleBuilder.getImageName())
-                        // .databaseContainerId(databaseBuilder.getImageName())
                         .systemContainerId(systemAdapterBuilder.getImageName())
         );
 

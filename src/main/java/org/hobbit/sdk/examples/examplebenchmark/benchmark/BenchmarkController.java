@@ -99,11 +99,11 @@ public class BenchmarkController extends AbstractBenchmarkController {
         // Create the evaluation module
 
         //TODO Update URIs with correct values
-        String[] envVariables = new String[]{Constants.EVALUATION_ACCURACY+"="+ "http://project-hobbit.eu/sdk-dummy-benchmark/Kpi",
-                Constants.EVALUATION_ROC_AUC+"="+ "http://project-hobbit.eu/sdk-dummy-benchmark/Kpi",
-                Constants.EVALUATION_TIME+"="+ "http://project-hobbit.eu/sdk-dummy-benchmark/Kpi",
-                Constants.EVALUATION_RECALL+"="+ "http://project-hobbit.eu/sdk-dummy-benchmark/Kpi",
-                Constants.EVALUATION_PRECISION+"="+ "http://project-hobbit.eu/sdk-dummy-benchmark/Kpi"};
+        String[] envVariables = new String[]{Constants.EVALUATION_ACCURACY+"="+ "http://project-hobbit.eu/factcheck-benchmark/accuracy",
+                Constants.EVALUATION_ROC_AUC+"="+ "http://project-hobbit.eu/factcheck-benchmark/aucRoc",
+                Constants.EVALUATION_TIME+"="+ "http://project-hobbit.eu/factcheck-benchmark/runTime",
+                Constants.EVALUATION_RECALL+"="+ "http://project-hobbit.eu/factcheck-benchmark/recall",
+                Constants.EVALUATION_PRECISION+"="+ "http://project-hobbit.eu/factcheck-benchmark/precision"};
         createEvaluationModule(EVALMODULE_IMAGE_NAME, envVariables);
 
         // wait for the evaluation to finish

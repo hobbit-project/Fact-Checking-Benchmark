@@ -47,8 +47,4 @@ public class IniConfig {
         trainCorrectDirectory = configIni.get("dataTrain", "correct");
         trainWrongDirectory = configIni.get("dataTrain", "wrong");
     }
-
-    public static void main(String[] args) {
-        System.out.println(configInstance.testCorrectDirectory);
-    }
 }

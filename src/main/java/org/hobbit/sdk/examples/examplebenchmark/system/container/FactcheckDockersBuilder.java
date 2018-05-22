@@ -8,21 +8,22 @@ import java.io.StringReader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import static org.hobbit.sdk.examples.examplebenchmark.Constants.GIT_REPO_PATH;
+import static org.hobbit.sdk.examples.examplebenchmark.Constants.PROJECT_NAME;
+
 public class FactcheckDockersBuilder extends BuildBasedDockersBuilder {
 
     private Path dockerWorkDir;
-    private Path jarFilePath ;
+    private Path jarFilePath;
 
     public FactcheckDockersBuilder(String dockerizerName) {
         super(dockerizerName);
 
-
-        imageName("factcheck-api");
+        imageName(GIT_REPO_PATH + PROJECT_NAME + "factcheck-api");
         //name for searching in logs
         containerName("factcheck-container");
         //temp docker file will be created there
         buildDirectory(".");
-
     }
 
     public FactcheckDockersBuilder dockerWorkDir(String value) {
@@ -66,17 +67,20 @@ public class FactcheckDockersBuilder extends BuildBasedDockersBuilder {
             throw new Exception(this.jarFilePath + " not found. May be you did not packaged it by 'mvn package -DskipTests=true' first");
         } else {
 */
-            String content;
 
-            content = "FROM openjdk:8-jdk-alpine\n" +
-                    "VOLUME /tmp\n" +
-                    "ARG JAR_FILE\n" +
-                    "ADD /data/factcheck-api-0.1.0.jar app.jar\n" +
-                    "ENTRYPOINT [\"java\",\"-Djava.security.egd=file:/dev/./urandom\",\"-jar\",\"/app.jar\"]\n";
+        String content = "FROM openjdk:8-jdk-alpine\n" +
+                "VOLUME /tmp\n" +
+                "ARG JAR_FILE\n" +
+                "ADD /factcheck-api-data/factcheck-api-0.1.0.jar app.jar\n" +
+                "ADD /factcheck-api-data/machinelearning /data/machinelearning\n" +
+                "ADD /factcheck-api-data/wordnet /data/wordnet\n" +
+                "ADD /factcheck-api-data/defacto.ini /src/main/resources/defacto.ini\n" +
+                "EXPOSE 8080\n" +
+                "ENTRYPOINT [\"java\",\"-Djava.security.egd=file:/dev/./urandom\",\"-jar\",\"/app.jar\"]\n";
 
-            this.dockerFileReader(new StringReader(content));
-            return this;
-     //   }
+        this.dockerFileReader(new StringReader(content));
+        return this;
+        //   }
     }
 
     public BuildBasedDockerizer build() throws Exception {

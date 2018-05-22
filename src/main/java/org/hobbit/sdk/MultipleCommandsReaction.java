@@ -1,11 +1,10 @@
-package org.hobbit.sdk.examples.examplebenchmark.system.container;
+package org.hobbit.sdk;
 
 import com.google.gson.Gson;
 import com.rabbitmq.client.MessageProperties;
 import org.hobbit.core.components.Component;
 import org.hobbit.core.data.StartCommandData;
 import org.hobbit.core.rabbit.RabbitMQUtils;
-import org.hobbit.sdk.ComponentsExecutor;
 import org.hobbit.sdk.utils.CommandQueueListener;
 import org.hobbit.sdk.utils.CommandSender;
 import org.hobbit.sdk.utils.commandreactions.CommandReaction;
@@ -159,6 +158,8 @@ public class MultipleCommandsReaction implements CommandReaction {
 
 
                 if (compToSubmit == null) {
+                    System.out.println(factcheck);
+                    System.out.println(factcheckImageName);
                     throw new Exception("No component to start as imageName=" + startCommandData.image);
                 }
 

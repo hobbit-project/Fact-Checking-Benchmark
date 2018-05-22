@@ -7,7 +7,7 @@ package org.hobbit.sdk.examples.examplebenchmark;
 
 public class Constants {
 
-    public static String GIT_REPO_PATH = "git.project-hobbit.eu:4567/";
+    public static String GIT_REPO_PATH = "git.project-hobbit.eu:4567/oshando/";
     //public static String GIT_REPO_PATH = "";
     //public static String PROJECT_NAME = "sdk-example-benchmark/";
     public static String PROJECT_NAME = "factcheck-benchmark/";

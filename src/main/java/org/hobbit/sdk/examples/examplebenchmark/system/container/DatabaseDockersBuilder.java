@@ -10,44 +10,26 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.hobbit.sdk.examples.examplebenchmark.Constants.GIT_REPO_PATH;
+import static org.hobbit.sdk.examples.examplebenchmark.Constants.PROJECT_NAME;
+
 public class DatabaseDockersBuilder extends BuildBasedDockersBuilder {
 
-    private Class[] runnerClass;
     private Path dockerWorkDir;
-    private Path jarFilePath;
     private List<String> filesToAdd = new ArrayList();
 
     public DatabaseDockersBuilder(String dockerizerName) {
         super(dockerizerName);
-        imageName("factcheck-mysql");
+
+        imageName(GIT_REPO_PATH + PROJECT_NAME + "factcheck-mysql");
         //name for searching in logs
         containerName("database-container");
         //temp docker file will be created there
-     //   buildDirectory("/Users/oshando/Projects/IdeaProjects/factcheck-benchmark/src/main/java/org/hobbit/sdk/examples/examplebenchmark/system/");
-buildDirectory(".");
-
-/*
-        addEnvironmentVariable("HOBBIT_RABBIT_HOST", (String)System.getenv().get("HOBBIT_RABBIT_HOST"));
-        addEnvironmentVariable("HOBBIT_SESSION_ID", (String)System.getenv().get("HOBBIT_SESSION_ID"));
-        addNetworks(CommonConstants.HOBBIT_NETWORKS);
-        addEnvironmentVariable("SYSTEM_PARAMETERS_MODEL", (String)System.getenv().get("SYSTEM_PARAMETERS_MODEL"));
-        addEnvironmentVariable("HOBBIT_CONTAINER_NAME", getContainerName());
-*/
-    }
-
-
-    public DatabaseDockersBuilder runnerClass(Class... values) {
-        this.runnerClass = values;
-        return this;
+        buildDirectory(".");
     }
 
     public DatabaseDockersBuilder dockerWorkDir(String value) {
         this.dockerWorkDir = Paths.get(value);
-        return this;
-    }
-
-    public DatabaseDockersBuilder jarFilePath(String value) {
-        this.jarFilePath = Paths.get(value).toAbsolutePath();
         return this;
     }
 
@@ -78,14 +60,12 @@ buildDirectory(".");
 
     private DatabaseDockersBuilder initFileReader() throws Exception {
 
-        //this.buildDirectory(".");
         String content = "FROM mysql:5.5\n" +
                 "ENV MYSQL_ROOT_PASSWORD 12345\n" +
                 "ENV MYSQL_DATABASE dbpedia_metrics\n" +
-                "ADD data/dbpedia_metrics.sql /docker-entrypoint-initdb.d/dbpedia_metrics.sql\n";
+                "ADD factcheck-db-data/dbpedia_metrics.sql /docker-entrypoint-initdb.d/dbpedia_metrics.sql\n";
         this.dockerFileReader(new StringReader(content));
         return this;
-
     }
 
     public BuildBasedDockerizer build() throws Exception {

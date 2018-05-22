@@ -11,12 +11,14 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import java.io.IOException;
+import java.util.concurrent.ThreadLocalRandom;
 
 
 public class SystemAdapter extends AbstractSystemAdapter {
     private static final Logger logger = LoggerFactory.getLogger(SystemAdapter.class);
     private static JenaKeyValue parameters;
-
+    private String databaseContainer;
+    private String factcheckContainer;
 
     @Override
     public void init() throws Exception {
@@ -28,31 +30,24 @@ public class SystemAdapter extends AbstractSystemAdapter {
         logger.debug("SystemModel: " + parameters.encodeToString());
 
         //Create factcheck-database container
-        String databaseContainer = createContainer("factcheck-mysql", org.hobbit.core.Constants.CONTAINER_TYPE_DATABASE,
-                new String[]{"HOBBIT_RABBIT_HOST=" + (String) System.getenv().get("HOBBIT_RABBIT_HOST"),
-                        "HOBBIT_SESSION_ID=" + (String) System.getenv().get("HOBBIT_SESSION_ID"),
-                        "SYSTEM_PARAMETERS_MODEL=" + (String) System.getenv().get("SYSTEM_PARAMETERS_MODEL"),
-                        "HOBBIT_RABBIT_HOST=" + (String) System.getenv().get("HOBBIT_RABBIT_HOST"),
-                        "HOBBIT_RABBIT_HOST=" + (String) System.getenv().get("HOBBIT_RABBIT_HOST")});
+        databaseContainer = createContainer("git.project-hobbit.eu:4567/oshando/factcheck-benchmark/factcheck-mysql", org.hobbit.core.Constants.CONTAINER_TYPE_DATABASE,
+                new String[]{"HOBBIT_CONTAINER_NAME=dbpedia"});
 
-
-        if (databaseContainer.isEmpty()){
+        if (databaseContainer.isEmpty()) {
             logger.debug("Error while creating database container {}", databaseContainer);
             throw new Exception("Database container not created");
-        }
-        else
+        } else
             logger.debug("Database container created {}", databaseContainer);
 
         //Create factcheck-api container
-        String factcheckContainer = createContainer("factcheck-api",Constants.CONTAINER_TYPE_SYSTEM,
+        factcheckContainer = createContainer("git.project-hobbit.eu:4567/oshando/factcheck-benchmark/factcheck-api", Constants.CONTAINER_TYPE_SYSTEM,
                 new String[]{
                         "HOBBIT_CONTAINER_NAME=dbpedia"});
 
-        if (factcheckContainer.isEmpty()){
+        if (factcheckContainer.isEmpty()) {
             logger.debug("Error while creating API container {}", factcheckContainer);
             throw new Exception("API container not created");
-        }
-        else
+        } else
             logger.debug("factcheck-api container created {}", factcheckContainer);
 
         // You can access the RDF model this.systemParamModel to retrieve meta data about this system adapter
@@ -69,13 +64,12 @@ public class SystemAdapter extends AbstractSystemAdapter {
     @Override
     public void receiveGeneratedTask(String taskId, byte[] data) {
         // handle the incoming task and create a result
+        logger.debug("receiveGeneratedTask({})->{}", taskId, new String(data));
 
         final String REGEX_SEPARATOR = ":\\*:";
         String[] split = taskId.split(REGEX_SEPARATOR);
         taskId = split[0];
         String fileTrace = split[1];
-
-        logger.debug("receiveGeneratedTask({})->{}", taskId, new String(data));
 
         String url = "http://localhost:8080/api/hobbitTask/" + taskId;
         MultiValueMap<String, Object> map = new LinkedMultiValueMap<String, Object>();
@@ -86,31 +80,12 @@ public class SystemAdapter extends AbstractSystemAdapter {
         ResponseEntity<FactCheckHobbitResponse> response = client.getResponse(HttpMethod.POST);
         FactCheckHobbitResponse result = response.getBody();
 
-        //TODO send default exception values when no response is received
-
         try {
             logger.debug("sendResultToEvalStorage({})->{}", taskId, result.getTruthValue());
             sendResultToEvalStorage(taskId, String.valueOf(result.getTruthValue()).getBytes());
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-       /*int randomNum = ThreadLocalRandom.current().nextInt(0, 100 + 1);
-        double confidence = randomNum * 0.01;
-        String value = "";
-
-
-            if(confidence>0.05)
-                value = "false:*:"+String.valueOf(confidence);
-            else
-                value = "true:*:"+String.valueOf(confidence);
-
-        try {
-            logger.info("sendResultToEvalStorage({})->{}", taskId, value);
-            sendResultToEvalStorage(taskId, value.getBytes());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
     }
 
     @Override
@@ -118,6 +93,11 @@ public class SystemAdapter extends AbstractSystemAdapter {
         // Free the resources you requested here
         logger.debug("close()");
 
+        if (!factcheckContainer.isEmpty())
+            stopContainer(factcheckContainer);
+
+        if (!databaseContainer.isEmpty())
+            stopContainer(databaseContainer);
         // Always close the super class after yours!
         super.close();
     }
