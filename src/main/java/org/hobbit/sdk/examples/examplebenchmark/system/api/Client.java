@@ -1,6 +1,5 @@
 package org.hobbit.sdk.examples.examplebenchmark.system.api;
 
-import org.hobbit.sdk.examples.examplebenchmark.system.FactCheckHobbitResponse;
 import org.springframework.http.*;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;

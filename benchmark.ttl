@@ -8,7 +8,7 @@
 <http://project-hobbit.eu/factcheck-benchmark/benchmark> a hobbit:Benchmark;
     rdfs:label "FactCheck Benchmark"@en;
     rdfs:comment    "FactCheck Algorithm benchmark"@en;
-    hobbit:imageName    "docker pull git.project-hobbit.eu:4567/oshando/factcheck-benchmark/benchmark-controller";
+    hobbit:imageName    "git.project-hobbit.eu:4567/oshando/factcheck-benchmark/benchmark-controller";
     hobbit:version "v1.0"@en;
     hobbit:measuresKPI <http://project-hobbit.eu/factcheck-benchmark/precision>;
     hobbit:measuresKPI <http://project-hobbit.eu/factcheck-benchmark/recall>;

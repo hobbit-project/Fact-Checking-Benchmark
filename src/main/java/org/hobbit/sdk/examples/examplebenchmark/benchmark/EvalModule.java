@@ -83,27 +83,41 @@ public class EvalModule extends AbstractEvaluationModule {
         logger.trace("evaluateResponse()");
 
         //Obtain received and expected responses
-        String[] receivedResponse = (new String(receivedData)).split(":\\*:");
-        String expectedResponse = new String(expectedData);
+        String[] receivedResponse = (new String(receivedData)).split("-");
+
+        String expectedResponse ;
+
+        if(new String(expectedData).contains("correct"))
+         expectedResponse = "correct";
+        else
+             expectedResponse = "wrong";
+
+
+        for(String val: receivedResponse){
+            logger.trace("Received{}",val );
+
+        }
+        logger.trace("EXpected{}",new String(expectedData) );
 
         //Increment false/true positive/negative counters
         if (receivedResponse[0].contains(expectedResponse)) {
-            if (expectedResponse.equals("true"))
+            if (expectedResponse.contains("correct"))
                 truePositive++;
             else
                 trueNegative++;
-        } else if (expectedResponse.equals("true") && receivedResponse[0].contains("false")) {
+        } else if (expectedResponse.contains("correct") && receivedResponse[0].contains("wrong")) {
             falseNegative++;
-        } else if (receivedResponse[0].contains("true") && expectedResponse.equals("false")) {
+        } else if (receivedResponse[0].contains("correct") && expectedResponse.contains("wrong")) {
             falsePositive++;
         }
 
+        logger.trace("Positive & Negative Counters: TP=({}), TN=({}), FN=({}), FP=({})", truePositive, trueNegative, falseNegative, falsePositive );
         totalRunTime += responseReceivedTimestamp-taskSentTimestamp;
 
         //Update accumulators for ROC/AUC calculation
         confidenceScores.add(Double.parseDouble(receivedResponse[1]));
 
-        if (expectedResponse.equals("true")){
+        if (expectedResponse.contains("correct")){
             trueLabels.add(1);
         }
         else{

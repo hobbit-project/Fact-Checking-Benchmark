@@ -61,9 +61,9 @@ public class DatabaseDockersBuilder extends BuildBasedDockersBuilder {
     private DatabaseDockersBuilder initFileReader() throws Exception {
 
         String content = "FROM mysql:5.5\n" +
-                "ENV MYSQL_ROOT_PASSWORD 12345\n" +
-                "ENV MYSQL_DATABASE dbpedia_metrics\n" +
-                "ADD factcheck-db-data/dbpedia_metrics.sql /docker-entrypoint-initdb.d/dbpedia_metrics.sql\n";
+                        "ENV MYSQL_ROOT_PASSWORD 12345\n" +
+                        "ENV MYSQL_DATABASE dbpedia_metrics\n" +
+                        "ADD factcheck-data/db/dbpedia_metrics.sql /docker-entrypoint-initdb.d/dbpedia_metrics.sql\n";
         this.dockerFileReader(new StringReader(content));
         return this;
     }

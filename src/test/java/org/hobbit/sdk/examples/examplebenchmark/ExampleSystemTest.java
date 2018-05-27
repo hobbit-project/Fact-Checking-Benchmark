@@ -56,9 +56,7 @@ public class ExampleSystemTest extends EnvironmentVariablesWrapper {
         taskGeneratorBuilder = new TaskGenDockerBuilder(new PullBasedDockersBuilder(TASKGEN_IMAGE_NAME));
         evalStorageBuilder = new EvalStorageDockerBuilder(new PullBasedDockersBuilder(EVAL_STORAGE_IMAGE_NAME));
         evalModuleBuilder = new EvalModuleDockerBuilder(new PullBasedDockersBuilder(EVALMODULE_IMAGE_NAME));
-
         systemAdapterBuilder = new SystemAdapterDockerBuilder(new ExampleDockersBuilder(SystemAdapter.class, SYSTEM_IMAGE_NAME).useCachedImage(useCachedImages));
-
         factcheckBuilder = new FactcheckDockersBuilder("factcheck-dockerizer");
         databaseBuilder = new DatabaseDockersBuilder("database-dockerizer");
 
@@ -110,7 +108,6 @@ public class ExampleSystemTest extends EnvironmentVariablesWrapper {
         Component systemAdapter = new SystemAdapter();
 
         Component database = databaseBuilder.build();
-        Objects.nonNull(database);
         Component factcheck = factcheckBuilder.build();
 
         if (dockerize)

@@ -4,16 +4,15 @@ import org.hobbit.core.components.Component;
 import org.hobbit.sdk.ComponentsExecutor;
 import org.hobbit.sdk.EnvironmentVariablesWrapper;
 import org.hobbit.sdk.JenaKeyValue;
+import org.hobbit.sdk.docker.AbstractDockerizer;
 import org.hobbit.sdk.docker.RabbitMqDockerizer;
+import org.hobbit.sdk.docker.builders.*;
 import org.hobbit.sdk.docker.builders.hobbit.*;
 import org.hobbit.sdk.examples.examplebenchmark.benchmark.*;
 import org.hobbit.sdk.examples.examplebenchmark.system.SystemAdapter;
-import org.hobbit.sdk.examples.examplebenchmark.system.container.DatabaseDockersBuilder;
 import org.hobbit.sdk.examples.examplebenchmark.system.container.FactcheckDockersBuilder;
-import org.hobbit.sdk.MultipleCommandsReaction;
 import org.hobbit.sdk.utils.CommandQueueListener;
-//import org.hobbit.sdk.utils.commandreactions.MultipleCommandsReaction;
-
+import org.hobbit.sdk.utils.commandreactions.MultipleCommandsReaction;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -39,7 +38,7 @@ public class ExampleBenchmarkTest extends EnvironmentVariablesWrapper {
     EvalStorageDockerBuilder evalStorageBuilder;
     SystemAdapterDockerBuilder systemAdapterBuilder;
     EvalModuleDockerBuilder evalModuleBuilder;
-    DatabaseDockersBuilder databaseBuilder;
+   // DatabaseDockersBuilder databaseBuilder;
     FactcheckDockersBuilder factcheckBuilder;
 
 
@@ -48,13 +47,11 @@ public class ExampleBenchmarkTest extends EnvironmentVariablesWrapper {
         benchmarkBuilder = new BenchmarkDockerBuilder(new ExampleDockersBuilder(BenchmarkController.class, BENCHMARK_IMAGE_NAME).useCachedImage(useCachedImage));
         dataGeneratorBuilder = new DataGenDockerBuilder(new ExampleDockersBuilder(DataGenerator.class, DATAGEN_IMAGE_NAME).useCachedImage(useCachedImage).addFileOrFolder("data"));
         taskGeneratorBuilder = new TaskGenDockerBuilder(new ExampleDockersBuilder(TaskGenerator.class, TASKGEN_IMAGE_NAME).useCachedImage(useCachedImage));
-
         evalStorageBuilder = new EvalStorageDockerBuilder(new ExampleDockersBuilder(EvalStorage.class, EVAL_STORAGE_IMAGE_NAME).useCachedImage(useCachedImage));
-
         systemAdapterBuilder = new SystemAdapterDockerBuilder(new ExampleDockersBuilder(SystemAdapter.class, SYSTEM_IMAGE_NAME).useCachedImage(useCachedImage));
         evalModuleBuilder = new EvalModuleDockerBuilder(new ExampleDockersBuilder(EvalModule.class, EVALMODULE_IMAGE_NAME).useCachedImage(useCachedImage));
-        databaseBuilder = new DatabaseDockersBuilder("database-dockerizer");
-        factcheckBuilder = new FactcheckDockersBuilder("api-dockerizer");
+      // databaseBuilder = new DatabaseDockersBuilder("database-dockerizer");
+       //factcheckBuilder = new FactcheckDockersBuilder("api-dockerizer");
     }
 
 
@@ -63,14 +60,14 @@ public class ExampleBenchmarkTest extends EnvironmentVariablesWrapper {
     public void buildImages() throws Exception {
 
         init(false);
-        benchmarkBuilder.build().prepareImage();
-        dataGeneratorBuilder.build().prepareImage();
-        taskGeneratorBuilder.build().prepareImage();
+   //   benchmarkBuilder.build().prepareImage();
+       dataGeneratorBuilder.build().prepareImage();
+      /* taskGeneratorBuilder.build().prepareImage();
         evalStorageBuilder.build().prepareImage();
         evalModuleBuilder.build().prepareImage();
-        systemAdapterBuilder.build().prepareImage();
-        databaseBuilder.build().prepareImage();
-        factcheckBuilder.build().prepareImage();
+        systemAdapterBuilder.build().prepareImage();*/
+        //databaseBuilder.build().prepareImage();
+        //factcheckBuilder.build().prepareImage();
     }
 
     @Test
@@ -102,8 +99,8 @@ public class ExampleBenchmarkTest extends EnvironmentVariablesWrapper {
         Component evalStorage = new EvalStorage();
         Component systemAdapter = new SystemAdapter();
         Component evalModule = new EvalModule();
-        Component database = databaseBuilder.build();
-        Component factcheck = factcheckBuilder.build();
+      //  Component database = databaseBuilder.build();
+       // Component factcheck = factcheckBuilder.build();
 
         if (dockerized) {
 
@@ -125,8 +122,8 @@ public class ExampleBenchmarkTest extends EnvironmentVariablesWrapper {
                         .dataGenerator(dataGen).dataGeneratorImageName(dataGeneratorBuilder.getImageName())
                         .taskGenerator(taskGen).taskGeneratorImageName(taskGeneratorBuilder.getImageName())
                         .evalStorage(evalStorage).evalStorageImageName(evalStorageBuilder.getImageName())
-                        .database(database).databaseImageName(databaseBuilder.getImageName())
-                        .factcheck(factcheck).factcheckImageName(factcheckBuilder.getImageName())
+                        //.database(database).databaseImageName(databaseBuilder.getImageName())
+                       // .factcheck(factcheck).factcheckImageName(factcheckBuilder.getImageName())
                         .evalModule(evalModule).evalModuleImageName(evalModuleBuilder.getImageName())
                         .systemContainerId(systemAdapterBuilder.getImageName())
         );
@@ -135,8 +132,8 @@ public class ExampleBenchmarkTest extends EnvironmentVariablesWrapper {
         commandQueueListener.waitForInitialisation();
 
         //Add images to components executor
-        componentsExecutor.submit(database, databaseBuilder.getImageName());
-        componentsExecutor.submit(factcheck, factcheckBuilder.getImageName());
+        //componentsExecutor.submit(database, databaseBuilder.getImageName());
+        //componentsExecutor.submit(factcheck, factcheckBuilder.getImageName());
         componentsExecutor.submit(benchmarkController);
         componentsExecutor.submit(systemAdapter, systemAdapterBuilder.getImageName());
 

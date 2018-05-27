@@ -32,13 +32,13 @@ public class EvalStorage extends AbstractEvaluationStorage {
 
     @Override
     public void receiveResponseData(String taskId, long timestamp, byte[] data) {
-        logger.trace("receiveResponseData()->{}",new String(data));
+        logger.trace("receiveResponseData()->({}){}",taskId,new String(data));
         putResult(false, taskId, timestamp, data);
     }
 
     @Override
     public void receiveExpectedResponseData(String taskId, long timestamp, byte[] data) {
-        logger.trace("receiveExpectedResponseData()->{}",new String(data));
+        logger.trace("receiveExpectedResponseData()->({}){}",taskId,new String(data));
         putResult(true, taskId, timestamp, data);
     }
 

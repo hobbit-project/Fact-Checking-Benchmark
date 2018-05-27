@@ -10,7 +10,7 @@
     rdfs:label	"FactCheck"@en;
 	rdfs:comment "FactCheck"@en;
 	hobbit:implementsAPI <http://project-hobbit.eu/factcheck-benchmark/api>;
-	hobbit:imageName "docker pull git.project-hobbit.eu:4567/oshando/factcheck-benchmark/factcheck-api";
+	hobbit:imageName "git.project-hobbit.eu:4567/oshando/factcheck-benchmark/system-adapter";
 
     <http://www.debs2017.org/gc/machineCount> "1000"^^xsd:unsignedInt;
 	<http://www.debs2017.org/gc/probabilityThreshold> "0.005"^^xsd:double;

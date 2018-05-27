@@ -1,9 +1,9 @@
 package org.hobbit.sdk.examples.examplebenchmark.system;
 
-import org.hobbit.core.Constants;
 import org.hobbit.core.components.AbstractSystemAdapter;
 import org.hobbit.sdk.JenaKeyValue;
 import org.hobbit.sdk.examples.examplebenchmark.system.api.Client;
+import org.hobbit.sdk.examples.examplebenchmark.system.api.FactCheckHobbitResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.*;
@@ -11,7 +11,6 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import java.io.IOException;
-import java.util.concurrent.ThreadLocalRandom;
 
 
 public class SystemAdapter extends AbstractSystemAdapter {
@@ -29,7 +28,7 @@ public class SystemAdapter extends AbstractSystemAdapter {
         parameters = new JenaKeyValue.Builder().buildFrom(systemParamModel);
         logger.debug("SystemModel: " + parameters.encodeToString());
 
-        //Create factcheck-database container
+        /*/Create factcheck-database container
         databaseContainer = createContainer("git.project-hobbit.eu:4567/oshando/factcheck-benchmark/factcheck-mysql", org.hobbit.core.Constants.CONTAINER_TYPE_DATABASE,
                 new String[]{"HOBBIT_CONTAINER_NAME=dbpedia"});
 
@@ -49,7 +48,7 @@ public class SystemAdapter extends AbstractSystemAdapter {
             throw new Exception("API container not created");
         } else
             logger.debug("factcheck-api container created {}", factcheckContainer);
-
+*/
         // You can access the RDF model this.systemParamModel to retrieve meta data about this system adapter
     }
 
@@ -68,10 +67,10 @@ public class SystemAdapter extends AbstractSystemAdapter {
 
         final String REGEX_SEPARATOR = ":\\*:";
         String[] split = taskId.split(REGEX_SEPARATOR);
-        taskId = split[0];
+        String urlTaskId = split[0];
         String fileTrace = split[1];
 
-        String url = "http://localhost:8080/api/hobbitTask/" + taskId;
+        String url = "http://localhost:8080/api/hobbitTask/" + urlTaskId;
         MultiValueMap<String, Object> map = new LinkedMultiValueMap<String, Object>();
         map.add("dataISWC", data);
         map.add("fileTrace", fileTrace);
@@ -80,9 +79,11 @@ public class SystemAdapter extends AbstractSystemAdapter {
         ResponseEntity<FactCheckHobbitResponse> response = client.getResponse(HttpMethod.POST);
         FactCheckHobbitResponse result = response.getBody();
 
+        //TODO use threshold to assign true or false value based on  score returned by FactCheck
+
         try {
             logger.debug("sendResultToEvalStorage({})->{}", taskId, result.getTruthValue());
-            sendResultToEvalStorage(taskId, String.valueOf(result.getTruthValue()).getBytes());
+            sendResultToEvalStorage(taskId, ("correct-"+String.valueOf(result.getTruthValue())).getBytes());
         } catch (IOException e) {
             e.printStackTrace();
         }

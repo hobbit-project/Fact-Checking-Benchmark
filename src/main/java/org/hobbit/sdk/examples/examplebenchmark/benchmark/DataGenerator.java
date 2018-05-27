@@ -1,10 +1,8 @@
 package org.hobbit.sdk.examples.examplebenchmark.benchmark;
 
-import config.IniConfig;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
+import config.FactbenchConfig;
 import org.hobbit.core.components.AbstractDataGenerator;
-import org.hobbit.core.rabbit.RabbitMQUtils;
+import org.ini4j.Ini;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rdf.TripleExtractor;
@@ -12,20 +10,21 @@ import rdf.TripleExtractor;
 import java.io.*;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 public class DataGenerator extends AbstractDataGenerator {
     private static final Logger logger = LoggerFactory.getLogger(DataGenerator.class);
+    private FactbenchConfig FACTBENCH_CONFIG;
 
     @Override
     public void init() throws Exception {
         // Always init the super class first!
         super.init();
         logger.debug("Init()");
+
         // Your initialization code comes here...
+        if ( FACTBENCH_CONFIG  == null )
+            FACTBENCH_CONFIG = new FactbenchConfig(new Ini(new File("/usr/src/factcheck-benchmark/data/factbench.ini")));
+           // FACTBENCH_CONFIG = new FactbenchConfig(new Ini(new File(DataGenerator.class.getResource("/factbench.ini").getFile())));
     }
 
     @Override
@@ -34,8 +33,8 @@ public class DataGenerator extends AbstractDataGenerator {
         // id of this data generator [getGeneratorId()] and the number of all data generators [getNumberOfGenerators()]
         // running in parallel.
         logger.debug("generateData()");
-        logger.info("crawling across directory: " + IniConfig.configInstance.testDirectory);
-        sendDataFromDirectory(Paths.get(IniConfig.configInstance.testDirectory));
+        logger.info("crawling across directory: " + FACTBENCH_CONFIG.getTestDirectory());
+        sendDataFromDirectory(Paths.get(FACTBENCH_CONFIG.getTestDirectory()));
     }
 
     private void sendDataFromDirectory(final Path path) throws IOException {

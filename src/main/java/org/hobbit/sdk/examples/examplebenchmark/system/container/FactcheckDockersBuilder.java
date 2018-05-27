@@ -65,22 +65,20 @@ public class FactcheckDockersBuilder extends BuildBasedDockersBuilder {
             throw new Exception("JarFileName class is not specified for " + this.getClass().getSimpleName());
         } else if (!this.jarFilePath.toFile().exists()) {
             throw new Exception(this.jarFilePath + " not found. May be you did not packaged it by 'mvn package -DskipTests=true' first");
-        } else {
-*/
+        } else {*/
 
         String content = "FROM openjdk:8-jdk-alpine\n" +
                 "VOLUME /tmp\n" +
                 "ARG JAR_FILE\n" +
-                "ADD /factcheck-api-data/factcheck-api-0.1.0.jar app.jar\n" +
-                "ADD /factcheck-api-data/machinelearning /data/machinelearning\n" +
-                "ADD /factcheck-api-data/wordnet /data/wordnet\n" +
-                "ADD /factcheck-api-data/defacto.ini /src/main/resources/defacto.ini\n" +
+                "ADD /factcheck-data/api/factcheck-api-0.1.0.jar app.jar\n" +
+                "ADD /factcheck-data/api/machinelearning /data/machinelearning\n" +
+                "ADD /factcheck-data/api/wordnet /data/wordnet\n" +
+                "ADD /factcheck-data/api/defacto.ini /src/main/resources/defacto.ini\n" +
                 "EXPOSE 8080\n" +
-                "ENTRYPOINT [\"java\",\"-Djava.security.egd=file:/dev/./urandom\",\"-jar\",\"/app.jar\"]\n";
+                "ENTRYPOINT [\"java\",\"-Xms1024M\", \"-Xmx2048M\",\"-Djava.security.egd=file:/dev/./urandom\",\"-jar\",\"/app.jar\"]\n";
 
         this.dockerFileReader(new StringReader(content));
         return this;
-        //   }
     }
 
     public BuildBasedDockerizer build() throws Exception {
