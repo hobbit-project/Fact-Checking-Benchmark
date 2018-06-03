@@ -1,5 +1,6 @@
-package org.hobbit.sdk.examples.examplebenchmark.system.container;
+package org.dice.factcheckbenchmark.system.container;
 
+import org.dice.factcheckbenchmark.Constants;
 import org.hobbit.sdk.docker.BuildBasedDockerizer;
 import org.hobbit.sdk.docker.builders.BuildBasedDockersBuilder;
 
@@ -10,9 +11,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.hobbit.sdk.examples.examplebenchmark.Constants.GIT_REPO_PATH;
-import static org.hobbit.sdk.examples.examplebenchmark.Constants.PROJECT_NAME;
-
 public class DatabaseDockersBuilder extends BuildBasedDockersBuilder {
 
     private Path dockerWorkDir;
@@ -21,7 +19,7 @@ public class DatabaseDockersBuilder extends BuildBasedDockersBuilder {
     public DatabaseDockersBuilder(String dockerizerName) {
         super(dockerizerName);
 
-        imageName(GIT_REPO_PATH + PROJECT_NAME + "factcheck-mysql");
+        imageName(Constants.GIT_REPO_PATH + Constants.PROJECT_NAME + "factcheck-mysql");
         //name for searching in logs
         containerName("database-container");
         //temp docker file will be created there

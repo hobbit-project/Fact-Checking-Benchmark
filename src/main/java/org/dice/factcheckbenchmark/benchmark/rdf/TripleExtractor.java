@@ -1,4 +1,4 @@
-package rdf;
+package org.dice.factcheckbenchmark.benchmark.rdf;
 
 import org.apache.jena.rdf.model.*;
 
@@ -172,13 +172,5 @@ public class TripleExtractor {
         if (!resource.owlSameAsList.isEmpty())
             return RDFResource.getDBpediaUri(resource);
         return resource.uri;
-    }
-
-    public static void main(String[] args) throws FileNotFoundException {
-        TripleExtractor tripleExtractor = new TripleExtractor("Einstein.ttl");
-//        System.out.println(tripleExtractor.subjectUri);
-//        System.out.println(tripleExtractor.predicate);
-//        System.out.println(tripleExtractor.objectUri);
-        System.out.println(tripleExtractor.simplifiedData);
     }
 }

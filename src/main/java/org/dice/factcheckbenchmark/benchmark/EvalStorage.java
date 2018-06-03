@@ -1,4 +1,4 @@
-package org.hobbit.sdk.examples.examplebenchmark.benchmark;
+package org.dice.factcheckbenchmark.benchmark;
 
 import org.hobbit.core.components.AbstractEvaluationStorage;
 import org.hobbit.core.data.ResultPair;
@@ -6,7 +6,6 @@ import org.hobbit.sdk.evalStorage.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.URL;
 import java.util.*;
 
 /**

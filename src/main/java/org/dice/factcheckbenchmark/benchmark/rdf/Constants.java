@@ -1,4 +1,4 @@
-package rdf;
+package org.dice.factcheckbenchmark.benchmark.rdf;
 
 /**
  * @author DANISH AHMED on 3/24/2018

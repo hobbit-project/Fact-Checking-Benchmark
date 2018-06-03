@@ -1,21 +1,16 @@
-package org.hobbit.sdk.examples.examplebenchmark.benchmark;
+package org.dice.factcheckbenchmark.benchmark;
 
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.vocabulary.RDF;
 import org.hobbit.core.components.AbstractEvaluationModule;
-import org.hobbit.sdk.examples.examplebenchmark.Constants;
+import org.dice.factcheckbenchmark.Constants;
 import org.hobbit.vocab.HOBBIT;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.vocabulary.RDF;
-import org.hobbit.core.components.AbstractEvaluationModule;
-import org.hobbit.vocab.HOBBIT;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -46,58 +41,52 @@ public class EvalModule extends AbstractEvaluationModule {
         super.init();
         Map<String, String> env = System.getenv();
 
-        if (!env.containsKey(Constants.EVALUATION_ACCURACY)) {
-            throw new IllegalArgumentException("Couldn't get \"" + Constants.EVALUATION_ACCURACY
+        if (!env.containsKey(Constants.ENV_KPI_ACCURACY)) {
+            throw new IllegalArgumentException("Couldn't get \"" + Constants.ENV_KPI_ACCURACY
                     + "\" from the environment. Aborting.");
         }
-        EVAL_ACCURACY = this.model.createProperty(env.get(Constants.EVALUATION_ACCURACY));
+        EVAL_ACCURACY = this.model.createProperty(env.get(Constants.ENV_KPI_ACCURACY));
 
-        if (!env.containsKey(Constants.EVALUATION_ROC_AUC)) {
-            throw new IllegalArgumentException("Couldn't get \"" + Constants.EVALUATION_ROC_AUC
+        if (!env.containsKey(Constants.ENV_KPI_ROC_AUC)) {
+            throw new IllegalArgumentException("Couldn't get \"" + Constants.ENV_KPI_ROC_AUC
                     + "\" from the environment. Aborting.");
         }
-        EVAL_ROC_AUC = this.model.createProperty(env.get(Constants.EVALUATION_ROC_AUC));
+        EVAL_ROC_AUC = this.model.createProperty(env.get(Constants.ENV_KPI_ROC_AUC));
 
-        if (!env.containsKey(Constants.EVALUATION_TIME)) {
-            throw new IllegalArgumentException("Couldn't get \"" + Constants.EVALUATION_TIME
+        if (!env.containsKey(Constants.ENV_KPI_EVALUATION_TIME)) {
+            throw new IllegalArgumentException("Couldn't get \"" + Constants.ENV_KPI_EVALUATION_TIME
                     + "\" from the environment. Aborting.");
         }
-        EVAL_RUN_TIME = this.model.createProperty(env.get(Constants.EVALUATION_TIME));
+        EVAL_RUN_TIME = this.model.createProperty(env.get(Constants.ENV_KPI_EVALUATION_TIME));
 
-        if (!env.containsKey(Constants.EVALUATION_PRECISION)) {
-            throw new IllegalArgumentException("Couldn't get \"" + Constants.EVALUATION_PRECISION
+        if (!env.containsKey(Constants.ENV_KPI_PRECISION)) {
+            throw new IllegalArgumentException("Couldn't get \"" + Constants.ENV_KPI_PRECISION
                     + "\" from the environment. Aborting.");
         }
-        EVAL_PRECISION  = this.model.createProperty(env.get(Constants.EVALUATION_PRECISION));
+        EVAL_PRECISION = this.model.createProperty(env.get(Constants.ENV_KPI_PRECISION));
 
-        if (!env.containsKey(Constants.EVALUATION_RECALL)) {
-            throw new IllegalArgumentException("Couldn't get \"" + Constants.EVALUATION_RECALL
+        if (!env.containsKey(Constants.ENV_KPI_RECALL)) {
+            throw new IllegalArgumentException("Couldn't get \"" + Constants.ENV_KPI_RECALL
                     + "\" from the environment. Aborting.");
         }
-        EVAL_RECALL = this.model.createProperty(env.get(Constants.EVALUATION_RECALL));
+        EVAL_RECALL = this.model.createProperty(env.get(Constants.ENV_KPI_RECALL));
     }
 
     @Override
     protected void evaluateResponse(byte[] expectedData, byte[] receivedData, long taskSentTimestamp, long responseReceivedTimestamp) throws Exception {
         // evaluate the given response and store the result, e.g., increment internal counters
-        logger.trace("evaluateResponse()");
+        logger.debug("evaluateResponse()");
 
         //Obtain received and expected responses
         String[] receivedResponse = (new String(receivedData)).split("-");
 
-        String expectedResponse ;
+        String expectedResponse;
 
-        if(new String(expectedData).contains("correct"))
-         expectedResponse = "correct";
+        if (new String(expectedData).contains("correct"))
+            expectedResponse = "correct";
         else
-             expectedResponse = "wrong";
+            expectedResponse = "wrong";
 
-
-        for(String val: receivedResponse){
-            logger.trace("Received{}",val );
-
-        }
-        logger.trace("EXpected{}",new String(expectedData) );
 
         //Increment false/true positive/negative counters
         if (receivedResponse[0].contains(expectedResponse)) {
@@ -111,16 +100,15 @@ public class EvalModule extends AbstractEvaluationModule {
             falsePositive++;
         }
 
-        logger.trace("Positive & Negative Counters: TP=({}), TN=({}), FN=({}), FP=({})", truePositive, trueNegative, falseNegative, falsePositive );
-        totalRunTime += responseReceivedTimestamp-taskSentTimestamp;
+        logger.debug("Positive & Negative Counters: TP=({}), TN=({}), FN=({}), FP=({})", truePositive, trueNegative, falseNegative, falsePositive);
+        totalRunTime += responseReceivedTimestamp - taskSentTimestamp;
 
         //Update accumulators for ROC/AUC calculation
         confidenceScores.add(Double.parseDouble(receivedResponse[1]));
 
-        if (expectedResponse.contains("correct")){
+        if (expectedResponse.contains("correct")) {
             trueLabels.add(1);
-        }
-        else{
+        } else {
             trueLabels.add(0);
         }
     }
@@ -147,27 +135,27 @@ public class EvalModule extends AbstractEvaluationModule {
         //Accuracy literal
         Literal accuracyLiteral = model.createTypedLiteral(accuracy, XSDDatatype.XSDdouble);
         model.add(experimentResource, EVAL_ACCURACY, accuracyLiteral);
-        logger.debug(Constants.EVALUATION_ACCURACY + " added to model: " + accuracy);
+        logger.debug(Constants.ENV_KPI_ACCURACY + " added to model: " + accuracy);
 
         //ROC/AUC literal
         /*Literal rocAucLiteral = model.createTypedLiteral(roc_auc, XSDDatatype.XSDdouble);
         model.add(experimentResource, EVAL_ROC_AUC, rocAucLiteral);
-        logger.debug(Constants.EVALUATION_ROC_AUC + " added to model: " + roc_auc);*/
+        logger.debug(BenchmarkConstants.ENV_KPI_ROC_AUC + " added to model: " + roc_auc);*/
 
         //Runtime literal
         Literal timeLiteral = model.createTypedLiteral(totalRunTime, XSDDatatype.XSDlong);
         model.add(experimentResource, EVAL_RUN_TIME, timeLiteral);
-        logger.debug(Constants.EVALUATION_TIME + " added to model: " + totalRunTime);
+        logger.debug(Constants.ENV_KPI_EVALUATION_TIME + " added to model: " + totalRunTime);
 
         //Recall literal
         Literal recallLiteral = model.createTypedLiteral(recall, XSDDatatype.XSDdouble);
         model.add(experimentResource, EVAL_RECALL, recallLiteral);
-        logger.debug(Constants.EVALUATION_RECALL + " added to model: " + recall);
+        logger.debug(Constants.ENV_KPI_RECALL + " added to model: " + recall);
 
         //Precision literal
         Literal precisionLiteral = model.createTypedLiteral(precision, XSDDatatype.XSDlong);
         model.add(experimentResource, EVAL_PRECISION, precisionLiteral);
-        logger.debug(Constants.EVALUATION_PRECISION + " added to model: " + precision);
+        logger.debug(Constants.ENV_KPI_PRECISION + " added to model: " + precision);
 
         return model;
     }

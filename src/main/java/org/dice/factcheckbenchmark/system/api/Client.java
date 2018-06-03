@@ -1,4 +1,4 @@
-package org.hobbit.sdk.examples.examplebenchmark.system.api;
+package org.dice.factcheckbenchmark.system.api;
 
 import org.springframework.http.*;
 import org.springframework.util.LinkedMultiValueMap;

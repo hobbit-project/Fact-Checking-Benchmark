@@ -1,7 +1,6 @@
-@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix org.dice.factcheckbenchmark.benchmark.rdf: <http://www.w3.org/1999/02/22-org.dice.factcheckbenchmark.benchmark.rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/org.dice.factcheckbenchmark.benchmark.rdf-schema#> .
 @prefix ex: <http://example.org/> .
-@prefix gerbil: <http://w3id.org/gerbil/vocab#> .
 @prefix hobbit: <http://w3id.org/hobbit/vocab#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
@@ -12,8 +11,3 @@
 	hobbit:implementsAPI <http://project-hobbit.eu/factcheck-benchmark/api>;
 	hobbit:imageName "git.project-hobbit.eu:4567/oshando/factcheck-benchmark/system-adapter";
 
-    <http://www.debs2017.org/gc/machineCount> "1000"^^xsd:unsignedInt;
-	<http://www.debs2017.org/gc/probabilityThreshold> "0.005"^^xsd:double;
-	<http://www.debs2017.org/gc/windowSize> "10"^^xsd:unsignedInt;
-	<http://www.debs2017.org/gc/transitionsCount> "5"^^xsd:unsignedInt;
-	<http://www.debs2017.org/gc/maxClusterIterations> "50"^^xsd:unsignedInt.

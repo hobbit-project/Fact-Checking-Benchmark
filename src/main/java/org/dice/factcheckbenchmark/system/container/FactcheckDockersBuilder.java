@@ -1,5 +1,6 @@
-package org.hobbit.sdk.examples.examplebenchmark.system.container;
+package org.dice.factcheckbenchmark.system.container;
 
+import org.dice.factcheckbenchmark.Constants;
 import org.hobbit.sdk.docker.BuildBasedDockerizer;
 import org.hobbit.sdk.docker.builders.BuildBasedDockersBuilder;
 
@@ -7,9 +8,6 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
-import static org.hobbit.sdk.examples.examplebenchmark.Constants.GIT_REPO_PATH;
-import static org.hobbit.sdk.examples.examplebenchmark.Constants.PROJECT_NAME;
 
 public class FactcheckDockersBuilder extends BuildBasedDockersBuilder {
 
@@ -19,7 +17,7 @@ public class FactcheckDockersBuilder extends BuildBasedDockersBuilder {
     public FactcheckDockersBuilder(String dockerizerName) {
         super(dockerizerName);
 
-        imageName(GIT_REPO_PATH + PROJECT_NAME + "factcheck-api");
+        imageName(Constants.GIT_REPO_PATH + Constants.PROJECT_NAME + "factcheck-api");
         //name for searching in logs
         containerName("factcheck-container");
         //temp docker file will be created there

@@ -1,4 +1,4 @@
-package rdf;
+package org.dice.factcheckbenchmark.benchmark.rdf;
 
 import org.apache.jena.rdf.model.*;
 

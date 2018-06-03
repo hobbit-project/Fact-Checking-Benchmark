@@ -1,4 +1,4 @@
-package org.hobbit.sdk.examples.examplebenchmark;
+package org.dice.factcheckbenchmark;
 
 import org.hobbit.core.components.Component;
 import org.hobbit.sdk.ComponentsExecutor;
@@ -7,20 +7,19 @@ import org.hobbit.sdk.JenaKeyValue;
 import org.hobbit.sdk.docker.RabbitMqDockerizer;
 import org.hobbit.sdk.docker.builders.PullBasedDockersBuilder;
 import org.hobbit.sdk.docker.builders.hobbit.*;
-import org.hobbit.sdk.examples.examplebenchmark.system.container.DatabaseDockersBuilder;
-import org.hobbit.sdk.examples.examplebenchmark.system.container.FactcheckDockersBuilder;
+import org.dice.factcheckbenchmark.system.container.DatabaseDockersBuilder;
+import org.dice.factcheckbenchmark.system.container.FactcheckDockersBuilder;
 import org.hobbit.sdk.MultipleCommandsReaction;
-import org.hobbit.sdk.examples.examplebenchmark.system.SystemAdapter;
+import org.dice.factcheckbenchmark.system.SystemAdapter;
 import org.hobbit.sdk.utils.CommandQueueListener;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Date;
-import java.util.Objects;
 
 import static org.hobbit.sdk.CommonConstants.EXPERIMENT_URI;
-import static org.hobbit.sdk.examples.examplebenchmark.Constants.*;
+import static org.dice.factcheckbenchmark.Constants.*;
 
 
 /**

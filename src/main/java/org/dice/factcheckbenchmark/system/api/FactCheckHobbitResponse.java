@@ -1,4 +1,4 @@
-package org.hobbit.sdk.examples.examplebenchmark.system.api;
+package org.dice.factcheckbenchmark.system.api;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;

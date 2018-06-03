@@ -1,14 +1,13 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix hobbit: <http://w3id.org/hobbit/vocab#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-@prefix mysets1: <http://w3id.org/mysets1/vocab#> .
-@prefix mysets: <http://w3id.org/mysets1/hobbit/vocab#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 
 <http://project-hobbit.eu/factcheck-benchmark/benchmark> a hobbit:Benchmark;
     rdfs:label "FactCheck Benchmark"@en;
     rdfs:comment    "FactCheck Algorithm benchmark"@en;
     hobbit:imageName    "git.project-hobbit.eu:4567/oshando/factcheck-benchmark/benchmark-controller";
+    hobbit:hasAPI <http://project-hobbit.eu/factcheck-benchmark/api>;
     hobbit:version "v1.0"@en;
     hobbit:measuresKPI <http://project-hobbit.eu/factcheck-benchmark/precision>;
     hobbit:measuresKPI <http://project-hobbit.eu/factcheck-benchmark/recall>;
@@ -16,132 +15,118 @@
     hobbit:measuresKPI <http://project-hobbit.eu/factcheck-benchmark/fmeasure>;
     hobbit:measuresKPI <http://project-hobbit.eu/factcheck-benchmark/runTime>;
     hobbit:measuresKPI <http://project-hobbit.eu/factcheck-benchmark/aucRoc>;
+    hobbit:hasParameter <http://project-hobbit.eu/factcheck-benchmark/dataSet>;
+    hobbit:hasParameter <http://project-hobbit.eu/factcheck-benchmark/probabilityThreshold>.
 
-    hobbit:hasParameter <http://project-hobbit.eu/factcheck-benchmark/dataPointCount>;
-    hobbit:hasParameter <http://project-hobbit.eu/factcheck-benchmark/benchmarkMode>;
-    hobbit:hasParameter <http://project-hobbit.eu/factcheck-benchmark/probabilityThreshold>;
-    hobbit:hasParameter <http://project-hobbit.eu/factcheck-benchmark/windowSize>;
-    hobbit:hasParameter <http://project-hobbit.eu/factcheck-benchmark/transitionsCount>;
-    hobbit:hasParameter <http://project-hobbit.eu/factcheck-benchmark/maxClusterIterations>;
-    hobbit:hasParameter <http://project-hobbit.eu/factcheck-benchmark/interval>;
-    hobbit:hasParameter <http://project-hobbit.eu/factcheck-benchmark/seed>;
-    hobbit:hasParameter <http://project-hobbit.eu/factcheck-benchmark/format>;
-    hobbit:hasParameter <http://project-hobbit.eu/factcheck-benchmark/machineCount>;
-    hobbit:hasParameter <http://project-hobbit.eu/factcheck-benchmark/timeoutMinutes>;
-
-    hobbit:hasAPI <http://project-hobbit.eu/factcheck-benchmark/api>;
-    hobbit:hasParameter	mysets:hasDataset .
-
-mysets:hasDataset	a	hobbit:Parameter, hobbit:FeatureParameter, hobbit:ConfigurableParameter;
-			rdfs:label	"Dataset name"@en;
-			rdfs:comment	"The dataset which should be tested."@en;
-			rdfs:domain	hobbit:Benchmark;
-			rdfs:range	mysets1:Datasets.
-
-<http://project-hobbit.eu/factcheck-benchmark/benchmark/precision> a hobbit:KPI;
+<http://project-hobbit.eu/factcheck-benchmark/precision> a hobbit:KPI;
      rdfs:label "Precision"@en;
         rdfs:comment "Precision = truePositive / (truePositive + falsePositive)"@en;
-        rdfs:range xsd:double .
+        rdfs:range xsd:float .
 
-<http://project-hobbit.eu/factcheck-benchmark/benchmark/recall> a hobbit:KPI;
+<http://project-hobbit.eu/factcheck-benchmark/recall> a hobbit:KPI;
      rdfs:label "Recall"@en;
         rdfs:comment "Recall = truePositive  / (truePositive + falseNegative)"@en;
-        rdfs:range xsd:double .
+        rdfs:range xsd:float .
 
-<http://project-hobbit.eu/factcheck-benchmark/benchmark/accuracy> a hobbit:KPI;
+<http://project-hobbit.eu/factcheck-benchmark/accuracy> a hobbit:KPI;
     rdfs:label "Accuracy"@en;
     rdfs:comment "Accuracy = (truePositive + trueNegative) / Total population"@en;
-    rdfs:range xsd:double .
+    rdfs:range xsd:float .
 
-<http://project-hobbit.eu/factcheck-benchmark/benchmark/fmeasure> a hobbit:KPI;
+<http://project-hobbit.eu/factcheck-benchmark/fmeasure> a hobbit:KPI;
 	rdfs:label "F-measure"@en;
 	rdfs:comment "F-measure is the harmonic mean of precision and recall."@en;
 	rdfs:range xsd:float .
 
-<http://project-hobbit.eu/factcheck-benchmark/benchmark/aucRoc> a hobbit:KPI;
+<http://project-hobbit.eu/factcheck-benchmark/runTime> a hobbit:KPI;
+	rdfs:label "Run Time"@en;
+	rdfs:comment "Run time for benchmark"@en;
+	rdfs:range xsd:int .
+
+<http://project-hobbit.eu/factcheck-benchmark/aucRoc> a hobbit:KPI;
 	rdfs:label "ROC curve"@en;
 	rdfs:comment "True positive rate is plotted in function of the false positive rate"@en;
 	rdfs:range xsd:float .
 
-<http://project-hobbit.eu/resources/factcheck-benchmark/benchmarkMode> a hobbit:ConfigurableParameter, hobbit:FeatureParameter;
-	rdfs:label "Benchmark mode. 'static' or 'dynamic:x:y' only"@en;
-    rdfs:range xsd:string;
-    hobbit:defaultValue "static"^^xsd:string .
-
-<http://project-hobbit.eu/resources/factcheck-benchmark/dataPointCount> a hobbit:ConfigurableParameter, hobbit:FeatureParameter;
-	rdfs:label "Amount of messages"@en;
-	rdfs:comment "Amount of messages"@en;
-	rdfs:range xsd:unsignedInt;
-    hobbit:defaultValue "63"^^xsd:unsignedInt .
-
-<http://project-hobbit.eu/resources/factcheck-benchmark/probabilityThreshold> a hobbit:ConfigurableParameter, hobbit:FeatureParameter, hobbit:ForwardedParameter;
+<http://project-hobbit.eu/factcheck-benchmark/probabilityThreshold> a hobbit:Parameter, hobbit:ConfigurableParameter, hobbit:FeatureParameter;
     rdfs:label "Probability threshold"@en;
     rdfs:comment "Probability threshold"@en;
-    rdfs:range xsd:double;
-    hobbit:defaultValue "0.005"^^xsd:double .
+    rdfs:range xsd:float;
+    hobbit:defaultValue "0.05"^^xsd:float .
 
-<http://project-hobbit.eu/resources/factcheck-benchmark/windowSize> a hobbit:ConfigurableParameter, hobbit:FeatureParameter, hobbit:ForwardedParameter;
-    rdfs:label "Window size"@en;
-    rdfs:comment "Window size"@en;
-    rdfs:range xsd:unsignedInt;
-    hobbit:defaultValue "10"^^xsd:unsignedInt .
+<http://project-hobbit.eu/factcheck-benchmark/dataSet> a hobbit:Parameter, hobbit:ConfigurableParameter, hobbit:FeatureParameter;
+    rdfs:label "Dataset name"@en;
+    rdfs:comment "Dataset from FactBench that should be used"@en;
+    rdfs:domain	hobbit:Benchmark;
+    rdfs:range <http://project-hobbit.eu/factcheck-benchmark/factbenchDataSet>;
+    hobbit:defaultValue <http://project-hobbit.eu/factcheck-benchmark/test-correct-benchmark> .
 
-<http://project-hobbit.eu/resources/factcheck-benchmark/transitionsCount> a hobbit:ConfigurableParameter, hobbit:FeatureParameter, hobbit:ForwardedParameter;
-    rdfs:label "Transitions count"@en;
-    rdfs:comment "Transitions count"@en;
-    rdfs:range xsd:unsignedInt;
-    hobbit:defaultValue "5"^^xsd:unsignedInt .
+<http://project-hobbit.eu/factcheck-benchmark/factbenchDataSet> a rdfs:Class, owl:Class .
 
-<http://project-hobbit.eu/resources/factcheck-benchmark/maxClusterIterations> a hobbit:ConfigurableParameter, hobbit:FeatureParameter, hobbit:ForwardedParameter;
-    rdfs:label "Max. clustering iterations"@en;
-    rdfs:comment "Max. clustering iterations"@en;
-    rdfs:range xsd:unsignedInt;
-    hobbit:defaultValue "50"^^xsd:unsignedInt .
+<http://project-hobbit.eu/factcheck-benchmark/test> a <http://project-hobbit.eu/factcheck-benchmark/factbenchDataSet>;
+	rdfs:label "Factbench-Test"@en;
+	rdfs:comment "using Factbench-Test dataset"@en .
 
-<http://project-hobbit.eu/resources/factcheck-benchmark/interval> a hobbit:ConfigurableParameter, hobbit:FeatureParameter;
-    rdfs:label "Interval between measurements (nanos)"@en;
-    rdfs:comment "Interval between measurements (nanos)"@en;
-    rdfs:range xsd:unsignedInt;
-    hobbit:defaultValue "10"^^xsd:unsignedInt .
+<http://project-hobbit.eu/factcheck-benchmark/train> a <http://project-hobbit.eu/factcheck-benchmark/factbenchDataSet>;
+	rdfs:label "Factbench-Train"@en;
+	rdfs:comment "using Factbench-Train dataset"@en .
 
-<http://project-hobbit.eu/resources/factcheck-benchmark/seed> a hobbit:ConfigurableParameter, hobbit:FeatureParameter;
-    rdfs:label "seed"@en;
-    rdfs:comment "seed"@en;
-    rdfs:range xsd:unsignedInt;
-    hobbit:defaultValue "123"^^xsd:unsignedInt .
+<http://project-hobbit.eu/factcheck-benchmark/test-wrong-date> a <http://project-hobbit.eu/factcheck-benchmark/factbenchDataSet>;
+	rdfs:label "Factbench-Test-Wrong-Date"@en;
+	rdfs:comment "using Factbench-Test-Wrong-Date dataset"@en .
 
-<http://project-hobbit.eu/resources/factcheck-benchmark/format> a hobbit:ConfigurableParameter, hobbit:FeatureParameter;
-    rdfs:label "Output format.0-RDF, otherwise CSV"@en;
-    rdfs:comment "Output format.0-RDF, otherwise CSV"@en;
-    rdfs:range xsd:unsignedInt;
-    hobbit:defaultValue "0"^^xsd:unsignedInt .
+<http://project-hobbit.eu/factcheck-benchmark/test-wrong-domain> a <http://project-hobbit.eu/factcheck-benchmark/factbenchDataSet>;
+	rdfs:label "Factbench-Test-Wrong-Domain"@en;
+	rdfs:comment "using Factbench-Test-Wrong-Domain dataset"@en .
 
-<http://project-hobbit.eu/resources/factcheck-benchmark/machineCount> a hobbit:ConfigurableParameter, hobbit:FeatureParameter;
-    rdfs:label "Machine count. Uses 1000 machines metadata"@en;
-    rdfs:label "Machine count. Uses 1000 machines metadata"@en;
-    rdfs:range xsd:unsignedInt;
-    hobbit:defaultValue "1"^^xsd:unsignedInt .
+<http://project-hobbit.eu/factcheck-benchmark/test-wrong-domain-range> a <http://project-hobbit.eu/factcheck-benchmark/factbenchDataSet>;
+	rdfs:label "Factbench-Test-Wrong-Domain-Range"@en;
+	rdfs:comment "using Factbench-Test-Wrong-Domain-Range dataset"@en .
 
-<http://project-hobbit.eu/resources/factcheck-benchmark/timeoutMinutes> a hobbit:ConfigurableParameter, hobbit:FeatureParameter;
-    rdfs:label "Timeout (min.) -1 meaning no timeout"@en;
-    rdfs:comment "Timeout (min.) -1 meaning no timeout"@en;
-    rdfs:range xsd:int;
-    hobbit:defaultValue "-1"^^xsd:int .
+<http://project-hobbit.eu/factcheck-benchmark/test-wrong-mix> a <http://project-hobbit.eu/factcheck-benchmark/factbenchDataSet>;
+	rdfs:label "Factbench-Test-Wrong-Mix"@en;
+	rdfs:comment "using Factbench-Test-Wrong-Mix dataset"@en .
 
-mysets1:Datasets a rdfs:Class, owl:Class .
+<http://project-hobbit.eu/factcheck-benchmark/test-wrong-property> a <http://project-hobbit.eu/factcheck-benchmark/factbenchDataSet>;
+	rdfs:label "Factbench-Test-Wrong-Property"@en;
+	rdfs:comment "using Factbench-Test-Wrong-Property dataset"@en .
 
-mysets1:CorrectData a mysets1:Datasets;
-		rdfs:label "Correct Data"@en;
-		rdfs:comment "using the Correct Dataset"@en .
+<http://project-hobbit.eu/factcheck-benchmark/test-wrong-random> a <http://project-hobbit.eu/factcheck-benchmark/factbenchDataSet>;
+	rdfs:label "Factbench-Test-Wrong-Random"@en;
+	rdfs:comment "using Factbench-Test-Wrong-Random dataset"@en .
 
-mysets1:WrongData a mysets1:Datasets;
-		rdfs:label "Wrong Data"@en;
-		rdfs:comment "using the Wrong Dataset"@en .
+<http://project-hobbit.eu/factcheck-benchmark/test-wrong-range> a <http://project-hobbit.eu/factcheck-benchmark/factbenchDataSet>;
+	rdfs:label "Factbench-Test-Wrong-Range"@en;
+	rdfs:comment "using Factbench-Test-Wrong-Range dataset"@en .
 
-mysets1:TrainDataSet a mysets1:Datasets;
-		rdfs:label "Train Data Set"@en;
-		rdfs:comment "using the Train Dataset"@en .
+<http://project-hobbit.eu/factcheck-benchmark/train-wrong-date> a <http://project-hobbit.eu/factcheck-benchmark/factbenchDataSet>;
+      rdfs:label "Factbench-Train-Wrong-Date"@en;
+      rdfs:comment "using Factbench-Train-Wrong-Date dataset"@en .
 
-mysets1:TestDataSet a mysets1:Datasets;
-		rdfs:label "Test Data Set"@en;
-		rdfs:comment "using the Test Dataset"@en .
+<http://project-hobbit.eu/factcheck-benchmark/train-wrong-domain> a <http://project-hobbit.eu/factcheck-benchmark/factbenchDataSet>;
+      rdfs:label "Factbench-Train-Wrong-Domain"@en;
+      rdfs:comment "using Factbench-Train-Wrong-Domain dataset"@en .
+
+<http://project-hobbit.eu/factcheck-benchmark/train-wrong-domain-range> a <http://project-hobbit.eu/factcheck-benchmark/factbenchDataSet>;
+      rdfs:label "Factbench-Train-Wrong-Domain-Range"@en;
+      rdfs:comment "using Factbench-Train-Wrong-Domain-Range dataset"@en .
+
+<http://project-hobbit.eu/factcheck-benchmark/train-wrong-mix> a <http://project-hobbit.eu/factcheck-benchmark/factbenchDataSet>;
+      rdfs:label "Factbench-Train-Wrong-Mix"@en;
+      rdfs:comment "using Factbench-Train-Wrong-Mix dataset"@en .
+
+<http://project-hobbit.eu/factcheck-benchmark/train-wrong-property> a <http://project-hobbit.eu/factcheck-benchmark/factbenchDataSet>;
+      rdfs:label "Factbench-Train-Wrong-Property"@en;
+      rdfs:comment "using Factbench-Train-Wrong-Property dataset"@en .
+
+<http://project-hobbit.eu/factcheck-benchmark/train-wrong-random> a <http://project-hobbit.eu/factcheck-benchmark/factbenchDataSet>;
+      rdfs:label "Factbench-Train-Wrong-Random"@en;
+      rdfs:comment "using Factbench-Train-Wrong-Random dataset"@en .
+
+<http://project-hobbit.eu/factcheck-benchmark/train-wrong-range> a <http://project-hobbit.eu/factcheck-benchmark/factbenchDataSet>;
+      rdfs:label "Factbench-Train-Wrong-Range"@en;
+      rdfs:comment "using Factbench-Train-Wrong-Range dataset"@en .
+
+<http://project-hobbit.eu/factcheck-benchmark/test-correct-benchmark> a <http://project-hobbit.eu/factcheck-benchmark/factbenchDataSet>;
+      rdfs:label "Benchmark-Tester"@en;
+      rdfs:comment "using Benchmark-Test dataset"@en .
