@@ -1,5 +1,6 @@
 package org.dice.factcheckbenchmark.system;
 
+import org.apache.jena.rdf.model.NodeIterator;
 import org.dice.factcheckbenchmark.system.api.Client;
 import org.hobbit.core.Constants;
 import org.hobbit.core.components.AbstractSystemAdapter;
@@ -20,7 +21,6 @@ public class SystemAdapter extends AbstractSystemAdapter {
     private String databaseContainer;
     private String factcheckContainer;
     private String factcheckContainerUrl;
-    private String databaseContainerUrl;
 
     @Override
     public void init() throws Exception {
@@ -30,10 +30,11 @@ public class SystemAdapter extends AbstractSystemAdapter {
 
         parameters = new JenaKeyValue.Builder().buildFrom(systemParamModel);
         logger.debug("SystemModel: " + parameters.encodeToString());
+        // You can access the RDF model this.systemParamModel to retrieve meta data about this system adapter
 
         //Create factcheck-database container
         databaseContainer = createContainer("git.project-hobbit.eu:4567/oshando/factcheck-benchmark/factcheck-mysql", Constants.CONTAINER_TYPE_DATABASE,
-                new String[]{"HOBBIT_CONTAINER_NAME=dbpedia"});
+                new String[]{});
 
         if (databaseContainer.isEmpty()) {
             logger.debug("Error while creating database container {}", databaseContainer);
@@ -43,8 +44,7 @@ public class SystemAdapter extends AbstractSystemAdapter {
 
         //Create factcheck-api container
         factcheckContainer = createContainer("git.project-hobbit.eu:4567/oshando/factcheck-benchmark/factcheck-api", Constants.CONTAINER_TYPE_SYSTEM,
-                new String[]{
-                        "HOBBIT_CONTAINER_NAME=dbpedia"});
+                new String[]{});
 
         if (factcheckContainer.isEmpty()) {
             logger.debug("Error while creating API container {}", factcheckContainer);
@@ -55,8 +55,6 @@ public class SystemAdapter extends AbstractSystemAdapter {
 
             logger.debug("factcheck-api container accessible from {}", factcheckContainerUrl);
         }
-
-        // You can access the RDF model this.systemParamModel to retrieve meta data about this system adapter
     }
 
     @Override
@@ -87,11 +85,9 @@ public class SystemAdapter extends AbstractSystemAdapter {
         ResponseEntity<FactCheckHobbitResponse> response = client.getResponse(HttpMethod.POST);
         FactCheckHobbitResponse result = response.getBody();
 
-        //TODO use threshold to assign true or false value based on  score returned by FactCheck
-
         try {
             logger.debug("sendResultToEvalStorage({})->{}", taskId, result.getTruthValue());
-            sendResultToEvalStorage(taskId, ("correct-" + String.valueOf(result.getTruthValue())).getBytes());
+            sendResultToEvalStorage(taskId, String.valueOf(result.getTruthValue()).getBytes());
         } catch (IOException e) {
             e.printStackTrace();
         }

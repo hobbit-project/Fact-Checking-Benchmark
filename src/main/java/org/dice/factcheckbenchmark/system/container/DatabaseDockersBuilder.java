@@ -4,6 +4,7 @@ import org.dice.factcheckbenchmark.Constants;
 import org.hobbit.sdk.docker.BuildBasedDockerizer;
 import org.hobbit.sdk.docker.builders.BuildBasedDockersBuilder;
 
+import java.io.File;
 import java.io.Reader;
 import java.io.StringReader;
 import java.nio.file.Path;
@@ -11,10 +12,12 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.dice.factcheckbenchmark.Constants.DB_DATA_DIR_PATH;
+import static org.dice.factcheckbenchmark.Constants.DB_FILE_NAME;
+
 public class DatabaseDockersBuilder extends BuildBasedDockersBuilder {
 
     private Path dockerWorkDir;
-    private List<String> filesToAdd = new ArrayList();
 
     public DatabaseDockersBuilder(String dockerizerName) {
         super(dockerizerName);
@@ -41,29 +44,27 @@ public class DatabaseDockersBuilder extends BuildBasedDockersBuilder {
         return this;
     }
 
-    public DatabaseDockersBuilder customDockerFileReader(Reader value) {
-        super.dockerFileReader(value);
-        return this;
-    }
-
     public DatabaseDockersBuilder imageName(String value) {
         super.imageName(value);
         return this;
     }
 
-    public DatabaseDockersBuilder addFileOrFolder(String path) {
-        this.filesToAdd.add(path);
-        return this;
-    }
 
     private DatabaseDockersBuilder initFileReader() throws Exception {
 
-        String content = "FROM mysql:5.5\n" +
-                        "ENV MYSQL_ROOT_PASSWORD 12345\n" +
-                        "ENV MYSQL_DATABASE dbpedia_metrics\n" +
-                        "ADD factcheck-data/db/dbpedia_metrics.sql /docker-entrypoint-initdb.d/dbpedia_metrics.sql\n";
-        this.dockerFileReader(new StringReader(content));
-        return this;
+        Path databaseFilePath = Paths.get(DB_DATA_DIR_PATH + DB_FILE_NAME);
+
+        if (!databaseFilePath.toFile().exists()) {
+            throw new Exception(databaseFilePath + " not found. Ensure database file is included in the directory.");
+        } else {
+
+            String content = "FROM mysql:5.5\n" +
+                    "ENV MYSQL_ROOT_PASSWORD 12345\n" +
+                    "ENV MYSQL_DATABASE dbpedia_metrics\n" +
+                    "ADD " + databaseFilePath.toString() + " /docker-entrypoint-initdb.d/dbpedia_metrics.sql\n";
+            this.dockerFileReader(new StringReader(content));
+            return this;
+        }
     }
 
     public BuildBasedDockerizer build() throws Exception {

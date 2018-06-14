@@ -3,6 +3,8 @@ package org.dice.factcheckbenchmark.benchmark;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.vocabulary.RDF;
+import org.dice.factcheckbenchmark.benchmark.roc.ROCCurve;
+import org.dice.factcheckbenchmark.benchmark.roc.ROCEvaluator;
 import org.hobbit.core.components.AbstractEvaluationModule;
 import org.dice.factcheckbenchmark.Constants;
 import org.hobbit.vocab.HOBBIT;
@@ -19,6 +21,7 @@ import java.util.Map;
 public class EvalModule extends AbstractEvaluationModule {
     private static final Logger logger = LoggerFactory.getLogger(EvalModule.class);
 
+    private double FACTCHECK_THRESHOLD;
     private int truePositive = 0;
     private int falsePositive = 0;
     private int trueNegative = 0;
@@ -70,33 +73,44 @@ public class EvalModule extends AbstractEvaluationModule {
                     + "\" from the environment. Aborting.");
         }
         EVAL_RECALL = this.model.createProperty(env.get(Constants.ENV_KPI_RECALL));
+
+        if (!env.containsKey(Constants.ENV_FACTCHECK_THRESHOLD)) {
+            throw new IllegalArgumentException("Couldn't get \"" + Constants.ENV_FACTCHECK_THRESHOLD
+                    + "\" from the environment. Aborting.");
+        }
+        FACTCHECK_THRESHOLD = Double.parseDouble(env.get(Constants.ENV_FACTCHECK_THRESHOLD));
+
+        logger.debug("Using FactCheck threshold value {}", FACTCHECK_THRESHOLD);
     }
 
     @Override
     protected void evaluateResponse(byte[] expectedData, byte[] receivedData, long taskSentTimestamp, long responseReceivedTimestamp) throws Exception {
-        // evaluate the given response and store the result, e.g., increment internal counters
+        // getROCCurve the given response and store the result, e.g., increment internal counters
         logger.debug("evaluateResponse()");
 
+        final String TRUE_RESPONSE = "/correct/";
+        final String FALSE_RESPONSE = "/wrong/";
+
         //Obtain received and expected responses
-        String[] receivedResponse = (new String(receivedData)).split("-");
+        String expectedResponse = new String(expectedData);
 
-        String expectedResponse;
+        double receivedScore = Double.valueOf(new String(receivedData));
+        String receivedResponse;
 
-        if (new String(expectedData).contains("correct"))
-            expectedResponse = "correct";
+        if (receivedScore >= FACTCHECK_THRESHOLD)
+            receivedResponse = TRUE_RESPONSE;
         else
-            expectedResponse = "wrong";
-
+            receivedResponse = FALSE_RESPONSE;
 
         //Increment false/true positive/negative counters
-        if (receivedResponse[0].contains(expectedResponse)) {
-            if (expectedResponse.contains("correct"))
+        if (expectedResponse.contains(receivedResponse)) {
+            if (expectedResponse.contains(TRUE_RESPONSE))
                 truePositive++;
             else
                 trueNegative++;
-        } else if (expectedResponse.contains("correct") && receivedResponse[0].contains("wrong")) {
+        } else if (expectedResponse.contains(TRUE_RESPONSE) && receivedResponse.contains(FALSE_RESPONSE)) {
             falseNegative++;
-        } else if (receivedResponse[0].contains("correct") && expectedResponse.contains("wrong")) {
+        } else if (expectedResponse.contains(FALSE_RESPONSE) && receivedResponse.contains(TRUE_RESPONSE)) {
             falsePositive++;
         }
 
@@ -104,13 +118,10 @@ public class EvalModule extends AbstractEvaluationModule {
         totalRunTime += responseReceivedTimestamp - taskSentTimestamp;
 
         //Update accumulators for ROC/AUC calculation
-        confidenceScores.add(Double.parseDouble(receivedResponse[1]));
+        confidenceScores.add(receivedScore);
+        trueLabels.add(expectedResponse.contains(TRUE_RESPONSE) ? 1 : 0);
 
-        if (expectedResponse.contains("correct")) {
-            trueLabels.add(1);
-        } else {
-            trueLabels.add(0);
-        }
+
     }
 
     @Override
@@ -120,9 +131,12 @@ public class EvalModule extends AbstractEvaluationModule {
         // write them into a Jena model and send it to the benchmark controller.
 
         //Calculate AUC and obtain the points for the ROC curve
-        /*Curve rocCurve = new Curve.PrimitivesBuilder().predicteds(confidenceScores).actuals(trueLabels).build();
-        double roc_auc = rocCurve.rocArea();
-        double[][] rocPoints = rocCurve.rocPoints();*/
+        ROCEvaluator evaluator = new ROCEvaluator(trueLabels, confidenceScores);
+        ROCCurve rocCurve = evaluator.getROCCurve();
+
+        for(int x = 0; x<confidenceScores.size(); x++){
+            System.out.println(trueLabels.get(x)+", "+confidenceScores.get(x));
+        }
 
         //Calculate accuracy, precision and recall
         double accuracy = calculateAccuracy();
@@ -138,9 +152,9 @@ public class EvalModule extends AbstractEvaluationModule {
         logger.debug(Constants.ENV_KPI_ACCURACY + " added to model: " + accuracy);
 
         //ROC/AUC literal
-        /*Literal rocAucLiteral = model.createTypedLiteral(roc_auc, XSDDatatype.XSDdouble);
+        Literal rocAucLiteral = model.createTypedLiteral(rocCurve.calculateAUC(), XSDDatatype.XSDdouble);
         model.add(experimentResource, EVAL_ROC_AUC, rocAucLiteral);
-        logger.debug(BenchmarkConstants.ENV_KPI_ROC_AUC + " added to model: " + roc_auc);*/
+        logger.debug(Constants.ENV_KPI_ROC_AUC + " added to model: " + rocCurve.calculateAUC());
 
         //Runtime literal
         Literal timeLiteral = model.createTypedLiteral(totalRunTime, XSDDatatype.XSDlong);

@@ -89,7 +89,6 @@ public class ExampleBenchmarkTest extends EnvironmentVariablesWrapper {
         setupGeneratorEnvironmentVariables(1, 1);
         setupSystemEnvironmentVariables(Constants.SYSTEM_URI, createSystemParameters());
 
-
         Component benchmarkController = new BenchmarkController();
         Component dataGen = new DataGenerator();
         Component taskGen = new TaskGenerator();

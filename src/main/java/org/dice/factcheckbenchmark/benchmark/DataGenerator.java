@@ -42,26 +42,29 @@ public class DataGenerator extends AbstractDataGenerator {
         sendDataFromDirectory(Paths.get(FACTBENCH_DIRECTORY));
     }
 
-    private void sendDataFromDirectory(final Path path) throws IOException {
-        if (Files.isDirectory(path)) {
-            Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
+    private void sendDataFromDirectory(final Path factbenchPath) throws IOException {
+        if (Files.isDirectory(factbenchPath)) {
+            Files.walkFileTree(factbenchPath, new SimpleFileVisitor<Path>() {
                 @Override
-                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                    String directory = setFileIdentifier(
-                            String.valueOf(path.toAbsolutePath()).replace("/", "\\"),
-                            String.valueOf(file.toAbsolutePath()));
+                public FileVisitResult visitFile(Path filePath, BasicFileAttributes attrs) throws IOException {
 
-                    TripleExtractor tripleExtractor = new TripleExtractor(String.valueOf(file.toAbsolutePath()));
-                    String data = String.format("%s:*:%s", directory, tripleExtractor.getSimplifiedData());
+                    if (filePath.toString().endsWith("ttl")) {
 
-                    logger.debug("sendDataToTaskGenerator()");
-                    sendDataToTaskGenerator(data.getBytes());
+                        String fileIdentifier = setFileIdentifier(
+                                String.valueOf(factbenchPath.toAbsolutePath()).replace("/", "\\"),
+                                String.valueOf(filePath.toAbsolutePath()));
 
+                        TripleExtractor tripleExtractor = new TripleExtractor(String.valueOf(filePath.toAbsolutePath()));
+                        String data = String.format("%s:*:%s", fileIdentifier, tripleExtractor.getSimplifiedData());
+
+                        logger.debug("sendDataToTaskGenerator({})", filePath.getFileName().toString());
+                        sendDataToTaskGenerator(data.getBytes());
+                    }
                     return FileVisitResult.CONTINUE;
                 }
             });
         } else {
-            logger.debug("No files found in {}", path);
+            logger.debug("No files found in {}", factbenchPath);
         }
     }
 

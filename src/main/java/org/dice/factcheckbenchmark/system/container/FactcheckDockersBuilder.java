@@ -9,6 +9,9 @@ import java.io.StringReader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import static org.dice.factcheckbenchmark.Constants.API_DATA_DIR_PATH;
+import static org.dice.factcheckbenchmark.Constants.API_JAR_NAME;
+
 public class FactcheckDockersBuilder extends BuildBasedDockersBuilder {
 
     private Path dockerWorkDir;
@@ -57,26 +60,26 @@ public class FactcheckDockersBuilder extends BuildBasedDockersBuilder {
 
 
     private FactcheckDockersBuilder initFileReader() throws Exception {
-       /* if (this.dockerWorkDir == null) {
-            throw new Exception("WorkingDirName class is not specified for " + this.getClass().getSimpleName());
-        } else if (this.jarFilePath == null) {
-            throw new Exception("JarFileName class is not specified for " + this.getClass().getSimpleName());
-        } else if (!this.jarFilePath.toFile().exists()) {
-            throw new Exception(this.jarFilePath + " not found. May be you did not packaged it by 'mvn package -DskipTests=true' first");
-        } else {*/
 
-        String content = "FROM openjdk:8-jdk-alpine\n" +
-                "VOLUME /tmp\n" +
-                "ARG JAR_FILE\n" +
-                "ADD /factcheck-data/api/factcheck-api-0.1.0.jar app.jar\n" +
-                "ADD /factcheck-data/api/machinelearning /data/machinelearning\n" +
-                "ADD /factcheck-data/api/wordnet /data/wordnet\n" +
-                "ADD /factcheck-data/api/defacto.ini /src/main/resources/defacto.ini\n" +
-                "EXPOSE 8080\n" +
-                "ENTRYPOINT [\"java\",\"-Xms1024M\", \"-Xmx2048M\",\"-Djava.security.egd=file:/dev/./urandom\",\"-jar\",\"/app.jar\"]\n";
+        Path jarFilePath = Paths.get(API_DATA_DIR_PATH + API_JAR_NAME);
 
-        this.dockerFileReader(new StringReader(content));
-        return this;
+        if (!jarFilePath.toFile().exists()) {
+            throw new Exception(jarFilePath + " not found. Ensure that factcheck-api jar is in the right directory.");
+        } else {
+
+            String content = "FROM openjdk:8-jdk-alpine\n" +
+                    "VOLUME /tmp\n" +
+                    "ARG JAR_FILE\n" +
+                    "ADD " + jarFilePath.toString() + " app.jar\n" +
+                    "ADD " + API_DATA_DIR_PATH + "machinelearning /data/machinelearning\n" +
+                    "ADD " + API_DATA_DIR_PATH + "wordnet /data/wordnet\n" +
+                    "ADD " + API_DATA_DIR_PATH + "defacto.ini /src/main/resources/defacto.ini\n" +
+                    "EXPOSE 8080\n" +
+                    "ENTRYPOINT [\"java\",\"-Xms1024M\", \"-Xmx2048M\",\"-Djava.security.egd=file:/dev/./urandom\",\"-jar\",\"/app.jar\"]\n";
+
+            this.dockerFileReader(new StringReader(content));
+            return this;
+        }
     }
 
     public BuildBasedDockerizer build() throws Exception {
