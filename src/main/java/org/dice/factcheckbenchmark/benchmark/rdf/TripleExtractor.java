@@ -8,6 +8,8 @@ import java.io.FileNotFoundException;
 
 /**
  * @author DANISH AHMED on 3/22/2018
+ * Extraction idea taken from: https://github.com/SmartDataAnalytics/DeFacto
+ * and then modified/optimized according to our need
  */
 public class TripleExtractor {
 
