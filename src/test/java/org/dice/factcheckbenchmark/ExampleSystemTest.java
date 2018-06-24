@@ -1,7 +1,6 @@
 package org.dice.factcheckbenchmark;
 
 import org.hobbit.core.components.Component;
-import org.hobbit.sdk.ComponentsExecutor;
 import org.hobbit.sdk.EnvironmentVariablesWrapper;
 import org.hobbit.sdk.JenaKeyValue;
 import org.hobbit.sdk.docker.RabbitMqDockerizer;
@@ -12,21 +11,29 @@ import org.dice.factcheckbenchmark.system.container.FactcheckDockersBuilder;
 import org.hobbit.sdk.MultipleCommandsReaction;
 import org.dice.factcheckbenchmark.system.SystemAdapter;
 import org.hobbit.sdk.utils.CommandQueueListener;
+import org.hobbit.sdk.utils.ComponentsExecutor;
+import org.hobbit.sdk.utils.commandreactions.MultipleCommandsReaction;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Date;
 
+import static org.hobbit.core.Constants.BENCHMARK_PARAMETERS_MODEL_KEY;
+import static org.hobbit.core.Constants.SYSTEM_PARAMETERS_MODEL_KEY;
+import static org.hobbit.sdk.CommonConstants.*;
+import static org.hobbit.sdk.examples.examplebenchmark.Constants.*;
 import static org.hobbit.sdk.CommonConstants.EXPERIMENT_URI;
 import static org.dice.factcheckbenchmark.Constants.*;
 
 
 /**
  * @author Pavel Smirnov
- * <p>
+ *
  * This test shows how to debug your system under already published benchmark images
  * if docker images of benchmarkController components are available online
+ *
+ *
  */
 
 
@@ -89,13 +96,13 @@ public class ExampleSystemTest extends EnvironmentVariablesWrapper {
 
         rabbitMqDockerizer = RabbitMqDockerizer.builder().build();
 
-        setupCommunicationEnvironmentVariables(rabbitMqDockerizer.getHostName(), "session_" + String.valueOf(new Date().getTime()));
+        setupCommunicationEnvironmentVariables(rabbitMqDockerizer.getHostName(), "session_"+String.valueOf(new Date().getTime()));
         setupBenchmarkEnvironmentVariables(EXPERIMENT_URI, createBenchmarkParameters());
-        setupGeneratorEnvironmentVariables(1, 1);
+        setupGeneratorEnvironmentVariables(1,1);
         setupSystemEnvironmentVariables(SYSTEM_URI, createSystemParameters());
 
         commandQueueListener = new CommandQueueListener();
-        componentsExecutor = new ComponentsExecutor(commandQueueListener, environmentVariables);
+        componentsExecutor = new ComponentsExecutor();
 
         rabbitMqDockerizer.run();
 
@@ -113,24 +120,28 @@ public class ExampleSystemTest extends EnvironmentVariablesWrapper {
             systemAdapter = systemAdapterBuilder.build();
 
         commandQueueListener.setCommandReactions(
-                new MultipleCommandsReaction(componentsExecutor, commandQueueListener)
+                new MultipleCommandsReaction.Builder(componentsExecutor, commandQueueListener)
+                        .benchmarkController(benchmarkController).benchmarkControllerImageName(BENCHMARK_IMAGE_NAME)
                         .dataGenerator(dataGen).dataGeneratorImageName(dataGeneratorBuilder.getImageName())
                         .database(database).databaseImageName(databaseBuilder.getImageName())
                         .factcheck(factcheck).factcheckImageName(factcheckBuilder.getImageName())
                         .taskGenerator(taskGen).taskGeneratorImageName(taskGeneratorBuilder.getImageName())
                         .evalStorage(evalStorage).evalStorageImageName(evalStorageBuilder.getImageName())
                         .evalModule(evalModule).evalModuleImageName(evalModuleBuilder.getImageName())
-                        .systemContainerId(systemAdapterBuilder.getImageName())
+                        .systemAdapter(systemAdapter).systemAdapterImageName(SYSTEM_IMAGE_NAME)
+                        .build()
         );
 
         componentsExecutor.submit(commandQueueListener);
         commandQueueListener.waitForInitialisation();
 
+        commandQueueListener.submit(BENCHMARK_IMAGE_NAME, new String[]{ BENCHMARK_PARAMETERS_MODEL_KEY+"="+ createBenchmarkParameters() });
+        commandQueueListener.submit(SYSTEM_IMAGE_NAME, new String[]{ SYSTEM_PARAMETERS_MODEL_KEY+"="+ createSystemParameters() });
+
         componentsExecutor.submit(benchmarkController);
         componentsExecutor.submit(database, databaseBuilder.getImageName());
         componentsExecutor.submit(factcheck, factcheckBuilder.getImageName());
         componentsExecutor.submit(systemAdapter, systemAdapterBuilder.getImageName());
-
 
         commandQueueListener.waitForTermination();
 
@@ -139,16 +150,16 @@ public class ExampleSystemTest extends EnvironmentVariablesWrapper {
         Assert.assertFalse(componentsExecutor.anyExceptions());
     }
 
-    public JenaKeyValue createBenchmarkParameters() {
+    public String createBenchmarkParameters() {
         JenaKeyValue kv = new JenaKeyValue();
-        kv.setValue(BENCHMARK_URI + "/param1", "value1");
-        return kv;
+        kv.setValue(BENCHMARK_URI+"/param1", "value1");
+        return kv.encodeToString();
     }
 
-    private static JenaKeyValue createSystemParameters() {
+    private static String createSystemParameters(){
         JenaKeyValue kv = new JenaKeyValue();
-        kv.setValue(SYSTEM_URI + "/param1", "value1");
-        return kv;
+        kv.setValue(SYSTEM_URI+"/param1", "value1");
+        return kv.encodeToString();
     }
 
 }
