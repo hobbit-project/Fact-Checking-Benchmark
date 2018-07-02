@@ -1,3 +1,17 @@
-# Fact-Checking-Benchmark
+# Factcheck Benchmark
 
-A benchmark for fact checking.
+[FactCheck](https://github.com/dice-group/FactCheck) is an algorithm that uses evidences found on the web to confirm or deny a particular query. [FactBench](https://github.com/SmartDataAnalytics/FactBench) is a collection of RDF models that are bounded by time spans and are group in train and test sets. This repository implements the components required by [Hobbit](https://github.com/hobbit-project) benchmarking platform to facilitate the evaluation of FactCheck using the models provided by FactBench.
+
+## Running the Benchmark 
+1) Follow the steps outlined for setting up the SDK [benchmark environment](https://github.com/hobbit-project/java-sdk-example#before-you-start).
+2) Clone the the FactBench repository and copy the [test](https://github.com/SmartDataAnalytics/FactBench/tree/master/test) and [train](https://github.com/SmartDataAnalytics/FactBench/tree/master/train) directories to the `data/factbench\` directory. The [resources/factbench.ini](https://github.com/oshando/factcheck-benchmark/blob/master/src/main/resources/factbench.ini) should be updated with full path on the host system when running the benchmark. On the other hand, [data/factbench.ini](https://github.com/oshando/factcheck-benchmark/blob/master/data/factbench.ini) should remain unchanged as it is used to create the container. 
+3) Obtain the `dbpedia_metrics.sql` file from [FactCheck](https://github.com/dice-group/FactCheck) repository and place it in the `factcheck-data/db` directory. This file will be used to initialize the FactCheck database Docker container, when it is being created.
+4) In order to create the FactCheck Docker container, the following should be present in the `factcheck-data/api` directory:
+   - the compiled `factcheck-api-*.jar` file from the [factcheck-api](https://github.com/danishahmed92/factcheck-api) project.
+   - the `/machinelearning` directory from the [FactCheck](https://github.com/dice-group/FactCheck) repository. The path would be `factcheck-data/api/machinelearning`. 
+   - the `/wordnet` directory from the [FactCheck](https://github.com/dice-group/FactCheck) repository. The path would be `factcheck-data/api/wordnet`.
+   - the `defacto.ini` file stores the configuration that will be use when the application runs in its Docker container.
+
+## Deploying the benchmark
+1) Follow the [steps](https://github.com/hobbit-project/java-sdk-example#how-to-create-a-benchmark) to build the docker images that can be uploaded to the remote respositories. Please find the basic benchmark component implementations in the [sources folder](https://github.com/hobbit-project/java-sdk-example/tree/master/src/main/java/org/hobbit/sdk/examples/examplebenchmark/benchmark). You may extend the components with logic of your benchmark and debug the components as pure java codes by running the `checkHealth()` method from [ExampleBenchmarkTest](https://github.com/hobbit-project/java-sdk-example/blob/master/src/test/java/org/hobbit/sdk/examples/ExampleBenchmarkTest.java)). You may specify input parameters models for benchmark and system you are running.
+2) The [push.sh](https://github.com/oshando/factcheck-benchmark/blob/master/push.sh) can be execute after logging into the repository to push the images.
