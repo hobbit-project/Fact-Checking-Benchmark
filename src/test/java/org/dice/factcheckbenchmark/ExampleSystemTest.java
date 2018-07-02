@@ -1,15 +1,13 @@
 package org.dice.factcheckbenchmark;
 
+import org.dice.factcheckbenchmark.system.SystemAdapter;
+import org.dice.factcheckbenchmark.system.container.FactcheckDockersBuilder;
 import org.hobbit.core.components.Component;
 import org.hobbit.sdk.EnvironmentVariablesWrapper;
 import org.hobbit.sdk.JenaKeyValue;
 import org.hobbit.sdk.docker.RabbitMqDockerizer;
 import org.hobbit.sdk.docker.builders.PullBasedDockersBuilder;
 import org.hobbit.sdk.docker.builders.hobbit.*;
-import org.dice.factcheckbenchmark.system.container.DatabaseDockersBuilder;
-import org.dice.factcheckbenchmark.system.container.FactcheckDockersBuilder;
-import org.hobbit.sdk.MultipleCommandsReaction;
-import org.dice.factcheckbenchmark.system.SystemAdapter;
 import org.hobbit.sdk.utils.CommandQueueListener;
 import org.hobbit.sdk.utils.ComponentsExecutor;
 import org.hobbit.sdk.utils.commandreactions.MultipleCommandsReaction;
@@ -19,12 +17,10 @@ import org.junit.Test;
 
 import java.util.Date;
 
+import static org.dice.factcheckbenchmark.Constants.*;
 import static org.hobbit.core.Constants.BENCHMARK_PARAMETERS_MODEL_KEY;
 import static org.hobbit.core.Constants.SYSTEM_PARAMETERS_MODEL_KEY;
-import static org.hobbit.sdk.CommonConstants.*;
-import static org.hobbit.sdk.examples.examplebenchmark.Constants.*;
 import static org.hobbit.sdk.CommonConstants.EXPERIMENT_URI;
-import static org.dice.factcheckbenchmark.Constants.*;
 
 
 /**
@@ -44,14 +40,15 @@ public class ExampleSystemTest extends EnvironmentVariablesWrapper {
     private CommandQueueListener commandQueueListener;
 
 
+
+
     BenchmarkDockerBuilder benchmarkBuilder;
     DataGenDockerBuilder dataGeneratorBuilder;
     TaskGenDockerBuilder taskGeneratorBuilder;
     EvalStorageDockerBuilder evalStorageBuilder;
     SystemAdapterDockerBuilder systemAdapterBuilder;
     EvalModuleDockerBuilder evalModuleBuilder;
-    DatabaseDockersBuilder databaseBuilder;
-
+    // DatabaseDockersBuilder databaseBuilder;
     FactcheckDockersBuilder factcheckBuilder;
 
 
@@ -63,18 +60,16 @@ public class ExampleSystemTest extends EnvironmentVariablesWrapper {
         evalStorageBuilder = new EvalStorageDockerBuilder(new PullBasedDockersBuilder(EVAL_STORAGE_IMAGE_NAME));
         evalModuleBuilder = new EvalModuleDockerBuilder(new PullBasedDockersBuilder(EVALMODULE_IMAGE_NAME));
         systemAdapterBuilder = new SystemAdapterDockerBuilder(new ExampleDockersBuilder(SystemAdapter.class, SYSTEM_IMAGE_NAME).useCachedImage(useCachedImages));
-        factcheckBuilder = new FactcheckDockersBuilder("factcheck-dockerizer");
-        databaseBuilder = new DatabaseDockersBuilder("database-dockerizer");
-
+        // databaseBuilder = new DatabaseDockersBuilder("database-dockerizer");
+        factcheckBuilder = new FactcheckDockersBuilder("api-dockerizer");
     }
 
     @Test
     @Ignore
     public void buildImages() throws Exception {
         init(false);
-        systemAdapterBuilder.build().prepareImage();
-        databaseBuilder.build().prepareImage();
-        factcheckBuilder.build().prepareImage();;
+        factcheckBuilder.build().prepareImage();
+        //systemAdapterBuilder.build().prepareImage();
     }
 
     @Test
@@ -113,18 +108,13 @@ public class ExampleSystemTest extends EnvironmentVariablesWrapper {
         Component evalModule = evalModuleBuilder.build();
         Component systemAdapter = new SystemAdapter();
 
-        Component database = databaseBuilder.build();
-        Component factcheck = factcheckBuilder.build();
-
-        if (dockerize)
+        if(dockerize)
             systemAdapter = systemAdapterBuilder.build();
 
         commandQueueListener.setCommandReactions(
                 new MultipleCommandsReaction.Builder(componentsExecutor, commandQueueListener)
                         .benchmarkController(benchmarkController).benchmarkControllerImageName(BENCHMARK_IMAGE_NAME)
                         .dataGenerator(dataGen).dataGeneratorImageName(dataGeneratorBuilder.getImageName())
-                        .database(database).databaseImageName(databaseBuilder.getImageName())
-                        .factcheck(factcheck).factcheckImageName(factcheckBuilder.getImageName())
                         .taskGenerator(taskGen).taskGeneratorImageName(taskGeneratorBuilder.getImageName())
                         .evalStorage(evalStorage).evalStorageImageName(evalStorageBuilder.getImageName())
                         .evalModule(evalModule).evalModuleImageName(evalModuleBuilder.getImageName())
@@ -138,10 +128,6 @@ public class ExampleSystemTest extends EnvironmentVariablesWrapper {
         commandQueueListener.submit(BENCHMARK_IMAGE_NAME, new String[]{ BENCHMARK_PARAMETERS_MODEL_KEY+"="+ createBenchmarkParameters() });
         commandQueueListener.submit(SYSTEM_IMAGE_NAME, new String[]{ SYSTEM_PARAMETERS_MODEL_KEY+"="+ createSystemParameters() });
 
-        componentsExecutor.submit(benchmarkController);
-        componentsExecutor.submit(database, databaseBuilder.getImageName());
-        componentsExecutor.submit(factcheck, factcheckBuilder.getImageName());
-        componentsExecutor.submit(systemAdapter, systemAdapterBuilder.getImageName());
 
         commandQueueListener.waitForTermination();
 

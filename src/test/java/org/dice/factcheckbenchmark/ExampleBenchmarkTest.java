@@ -1,5 +1,9 @@
-package org.hobbit.sdk.examples.examplebenchmark;
+package org.dice.factcheckbenchmark;
 
+import org.dice.factcheckbenchmark.benchmark.*;
+import org.dice.factcheckbenchmark.component.DummySystemAdapter;
+import org.dice.factcheckbenchmark.system.SystemAdapter;
+import org.dice.factcheckbenchmark.system.container.FactcheckDockersBuilder;
 import org.hobbit.core.components.Component;
 import org.hobbit.sdk.EnvironmentVariablesWrapper;
 import org.hobbit.sdk.JenaKeyValue;
@@ -8,8 +12,6 @@ import org.hobbit.sdk.docker.MultiThreadedImageBuilder;
 import org.hobbit.sdk.docker.RabbitMqDockerizer;
 import org.hobbit.sdk.docker.builders.*;
 import org.hobbit.sdk.docker.builders.hobbit.*;
-import org.hobbit.sdk.examples.examplebenchmark.benchmark.*;
-import org.hobbit.sdk.examples.examplebenchmark.system.SystemAdapter;
 import org.hobbit.sdk.utils.CommandQueueListener;
 import org.hobbit.sdk.utils.ComponentsExecutor;
 import org.hobbit.sdk.utils.commandreactions.MultipleCommandsReaction;
@@ -19,10 +21,10 @@ import org.junit.Test;
 
 import java.util.Date;
 
+import static org.dice.factcheckbenchmark.Constants.*;
 import static org.hobbit.core.Constants.BENCHMARK_PARAMETERS_MODEL_KEY;
 import static org.hobbit.core.Constants.SYSTEM_PARAMETERS_MODEL_KEY;
 import static org.hobbit.sdk.CommonConstants.*;
-import static org.hobbit.sdk.examples.examplebenchmark.Constants.*;
 
 /**
  * @author Pavel Smirnov
@@ -40,7 +42,8 @@ public class ExampleBenchmarkTest extends EnvironmentVariablesWrapper {
     EvalStorageDockerBuilder evalStorageBuilder;
     SystemAdapterDockerBuilder systemAdapterBuilder;
     EvalModuleDockerBuilder evalModuleBuilder;
-
+    // DatabaseDockersBuilder databaseBuilder;
+    FactcheckDockersBuilder factcheckBuilder;
 
 
     public void init(Boolean useCachedImage) throws Exception {
@@ -48,12 +51,13 @@ public class ExampleBenchmarkTest extends EnvironmentVariablesWrapper {
         benchmarkBuilder = new BenchmarkDockerBuilder(new ExampleDockersBuilder(BenchmarkController.class, BENCHMARK_IMAGE_NAME).useCachedImage(useCachedImage));
         dataGeneratorBuilder = new DataGenDockerBuilder(new ExampleDockersBuilder(DataGenerator.class, DATAGEN_IMAGE_NAME).useCachedImage(useCachedImage).addFileOrFolder("data"));
         taskGeneratorBuilder = new TaskGenDockerBuilder(new ExampleDockersBuilder(TaskGenerator.class, TASKGEN_IMAGE_NAME).useCachedImage(useCachedImage));
-
         evalStorageBuilder = new EvalStorageDockerBuilder(new ExampleDockersBuilder(EvalStorage.class, EVAL_STORAGE_IMAGE_NAME).useCachedImage(useCachedImage));
-
-        systemAdapterBuilder = new SystemAdapterDockerBuilder(new ExampleDockersBuilder(SystemAdapter.class, SYSTEM_IMAGE_NAME).useCachedImage(useCachedImage));
+        systemAdapterBuilder = new SystemAdapterDockerBuilder(new ExampleDockersBuilder(DummySystemAdapter.class, SYSTEM_IMAGE_NAME).useCachedImage(useCachedImage));
         evalModuleBuilder = new EvalModuleDockerBuilder(new ExampleDockersBuilder(EvalModule.class, EVALMODULE_IMAGE_NAME).useCachedImage(useCachedImage));
+        // databaseBuilder = new DatabaseDockersBuilder("database-dockerizer");
+        //factcheckBuilder = new FactcheckDockersBuilder("api-dockerizer");
     }
+
 
 
     @Test
@@ -100,7 +104,7 @@ public class ExampleBenchmarkTest extends EnvironmentVariablesWrapper {
         Component dataGen = new DataGenerator();
         Component taskGen = new TaskGenerator();
         Component evalStorage = new EvalStorage();
-        Component systemAdapter = new SystemAdapter();
+        Component systemAdapter = new DummySystemAdapter();
         Component evalModule = new EvalModule();
 
         if(dockerized) {
@@ -148,6 +152,7 @@ public class ExampleBenchmarkTest extends EnvironmentVariablesWrapper {
     public String createBenchmarkParameters() {
         JenaKeyValue kv = new JenaKeyValue();
         //kv.setValue(BENCHMARK_MODE_INPUT_NAME, BENCHMARK_MODE_DYNAMIC+":10:1");
+        kv.setValue(Constants.URI_FACTCHECK_THRESHOLD, 0.5);
         return kv.encodeToString();
     }
 

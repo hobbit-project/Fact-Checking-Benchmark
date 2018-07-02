@@ -2,6 +2,11 @@ package org.dice.factcheckbenchmark.benchmark.roc;
 
 public class Point {
 
+    /*
+
+    ROC/AUC implementation extracted from: https://github.com/dice-group/gerbil.git
+     */
+
     public double x;
     public double y;
 

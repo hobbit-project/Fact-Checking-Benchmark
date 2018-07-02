@@ -7,6 +7,11 @@ import javax.annotation.concurrent.NotThreadSafe;
 @NotThreadSafe
 public class ROCCurve {
 
+    /*
+
+    ROC/AUC implementation extracted from: https://github.com/dice-group/gerbil.git
+     */
+
     public List<Point> points = new ArrayList<Point>();
 
     private DIRECTION lastDir = null;

@@ -5,6 +5,11 @@ import java.util.List;
 
 public class ROCEvaluator {
 
+    /*
+
+    ROC/AUC implementation extracted from: https://github.com/dice-group/gerbil.git
+     */
+
     private ArrayList<Integer> truthValues;
     private ArrayList<Double> predictedValues;
 

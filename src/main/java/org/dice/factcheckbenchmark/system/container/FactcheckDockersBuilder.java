@@ -73,9 +73,9 @@ public class FactcheckDockersBuilder extends BuildBasedDockersBuilder {
                     "ADD " + jarFilePath.toString() + " app.jar\n" +
                     "ADD " + API_DATA_DIR_PATH + "machinelearning /data/machinelearning\n" +
                     "ADD " + API_DATA_DIR_PATH + "wordnet /data/wordnet\n" +
-                    "ADD " + API_DATA_DIR_PATH + "defacto.ini /src/main/resources/defacto.ini\n" +
+                    "ADD " + API_DATA_DIR_PATH + "defacto.ini defacto.ini\n" +
                     "EXPOSE 8080\n" +
-                    "ENTRYPOINT [\"java\",\"-Xms1024M\", \"-Xmx2048M\",\"-Djava.security.egd=file:/dev/./urandom\",\"-jar\",\"/app.jar\"]\n";
+                    "ENTRYPOINT [\"java\",\"-Djava.security.egd=file:/dev/./urandom\",\"-jar\",\"/app.jar\"]\n";
 
             this.dockerFileReader(new StringReader(content));
             return this;

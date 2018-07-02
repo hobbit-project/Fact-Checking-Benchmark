@@ -114,13 +114,12 @@ public class EvalModule extends AbstractEvaluationModule {
             falsePositive++;
         }
 
-        logger.debug("Positive & Negative Counters: TP=({}), TN=({}), FN=({}), FP=({})", truePositive, trueNegative, falseNegative, falsePositive);
         totalRunTime += responseReceivedTimestamp - taskSentTimestamp;
 
         //Update accumulators for ROC/AUC calculation
         confidenceScores.add(receivedScore);
         trueLabels.add(expectedResponse.contains(TRUE_RESPONSE) ? 1 : 0);
-
+        logger.debug("True Label {}, Confidence Score {}", expectedResponse.contains(TRUE_RESPONSE) ? 1 : 0, receivedScore);
 
     }
 
@@ -133,10 +132,6 @@ public class EvalModule extends AbstractEvaluationModule {
         //Calculate AUC and obtain the points for the ROC curve
         ROCEvaluator evaluator = new ROCEvaluator(trueLabels, confidenceScores);
         ROCCurve rocCurve = evaluator.getROCCurve();
-
-        for(int x = 0; x<confidenceScores.size(); x++){
-            System.out.println(trueLabels.get(x)+", "+confidenceScores.get(x));
-        }
 
         //Calculate accuracy, precision and recall
         double accuracy = calculateAccuracy();

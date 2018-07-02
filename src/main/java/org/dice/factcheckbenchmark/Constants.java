@@ -24,15 +24,15 @@ public class Constants {
     public static final String SYSTEM_URI = "http://project-hobbit.eu/" + PROJECT_NAME + "system";
 
     public static final String SDK_BUILD_DIR_PATH = ".";  //build directory, temp docker file will be created there
-    public static final String SDK_JAR_FILE_PATH = "target/factcheck-benchmark-1.0.1.jar"; //should be packaged will all dependencies (via 'mvn package -DskipTests=true' command)
+    public static final String SDK_JAR_FILE_PATH = "target/factcheck-benchmark-1.0.3.jar"; //should be packaged will all dependencies (via 'mvn package -DskipTests=true' command)
     public static final String SDK_WORK_DIR_PATH = "/usr/src/" + PROJECT_NAME;
 
     //Directory path and jar file name for factcheck-api container
-    public static final String API_DATA_DIR_PATH = "/factcheck-data/api/";
-    public static final String API_JAR_NAME = "factcheck-api-1.0.1.jar";
+    public static final String API_DATA_DIR_PATH = "factcheck-data/api/";
+    public static final String API_JAR_NAME = "factcheck-api-1.0.2.jar";
 
     //Directory path and database file name for the factcheck-db container
-    public static final String DB_DATA_DIR_PATH = "/factcheck-data/db/";
+    public static final String DB_DATA_DIR_PATH = "factcheck-data/db/";
     public static final String DB_FILE_NAME = "dbpedia_metrics.sql";
 
     public static final String ENV_KPI_RECALL = "EVALUATION_RECALL";

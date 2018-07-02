@@ -35,8 +35,8 @@ public class BenchmarkController extends AbstractBenchmarkController {
         NodeIterator iterator = benchmarkParamModel.listObjectsOfProperty(benchmarkParamModel
                 .getProperty(Constants.URI_FACTBENCH_DATA_SET));
 
-        String dataSet = "http://project-hobbit.eu/factcheck-benchmark/train-correct-benchmark";
-        if (iterator.hasNext()) {
+        String dataSet = "http://project-hobbit.eu/factcheck-benchmark/test";
+        /*if (iterator.hasNext()) {
             try {
 
                 dataSet = iterator.next().asResource().getURI();
@@ -45,7 +45,7 @@ public class BenchmarkController extends AbstractBenchmarkController {
             } catch (Exception e) {
                 logger.debug("Couldn't get " + Constants.URI_FACTBENCH_DATA_SET + " parameter from parameter model.", e);
             }
-        }
+        }*/
 
         /*
             Obtain threshold for Factcheck
