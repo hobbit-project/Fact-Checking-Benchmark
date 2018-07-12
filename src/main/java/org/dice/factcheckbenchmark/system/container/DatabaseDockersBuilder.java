@@ -1,19 +1,15 @@
 package org.dice.factcheckbenchmark.system.container;
 
-import org.dice.factcheckbenchmark.Constants;
+import org.dice.factcheckbenchmark.BenchmarkConstants;
 import org.hobbit.sdk.docker.BuildBasedDockerizer;
 import org.hobbit.sdk.docker.builders.BuildBasedDockersBuilder;
 
-import java.io.File;
-import java.io.Reader;
 import java.io.StringReader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
 
-import static org.dice.factcheckbenchmark.Constants.DB_DATA_DIR_PATH;
-import static org.dice.factcheckbenchmark.Constants.DB_FILE_NAME;
+import static org.dice.factcheckbenchmark.BenchmarkConstants.DB_DATA_DIR_PATH;
+import static org.dice.factcheckbenchmark.BenchmarkConstants.DB_FILE_NAME;
 
 public class DatabaseDockersBuilder extends BuildBasedDockersBuilder {
 
@@ -22,7 +18,7 @@ public class DatabaseDockersBuilder extends BuildBasedDockersBuilder {
     public DatabaseDockersBuilder(String dockerizerName) {
         super(dockerizerName);
 
-        imageName(Constants.GIT_REPO_PATH + Constants.PROJECT_NAME + "factcheck-mysql");
+        imageName(BenchmarkConstants.FACTCHECK_DATABASE_IMAGE_NAME);
         //name for searching in logs
         containerName("database-container");
         //temp docker file will be created there
@@ -55,7 +51,7 @@ public class DatabaseDockersBuilder extends BuildBasedDockersBuilder {
         Path databaseFilePath = Paths.get(DB_DATA_DIR_PATH + DB_FILE_NAME);
 
         if (!databaseFilePath.toFile().exists()) {
-            throw new Exception(databaseFilePath + " not found. Ensure database file is included in the directory.");
+            throw new Exception(databaseFilePath + " not found. Ensure "+DB_DATA_DIR_PATH + DB_FILE_NAME+" is included in the directory.");
         } else {
 
             String content = "FROM mysql:5.5\n" +

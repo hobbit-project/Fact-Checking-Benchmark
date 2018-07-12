@@ -2,12 +2,12 @@ package org.dice.factcheckbenchmark.component;
 
 import org.dice.factcheckbenchmark.system.api.Client;
 import org.dice.factcheckbenchmark.system.api.FactCheckHobbitResponse;
-import org.hobbit.core.Constants;
 import org.hobbit.core.components.AbstractSystemAdapter;
 import org.hobbit.sdk.JenaKeyValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
@@ -61,13 +61,25 @@ public class DummySystemAdapter extends AbstractSystemAdapter {
 
         Client client = new Client(map, MediaType.MULTIPART_FORM_DATA, url);
         ResponseEntity<FactCheckHobbitResponse> response = client.getResponse(HttpMethod.POST);
-        FactCheckHobbitResponse result = response.getBody();
 
-        try {
-            logger.debug("sendResultToEvalStorage({})->{}", taskId, result.getTruthValue());
-            sendResultToEvalStorage(taskId, String.valueOf(result.getTruthValue()).getBytes());
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (response.getStatusCode().equals(HttpStatus.OK)) {
+            FactCheckHobbitResponse result = response.getBody();
+
+            try {
+                logger.debug("sendResultToEvalStorage({})->{}", taskId, result.getTruthValue());
+                sendResultToEvalStorage(taskId, String.valueOf(result.getTruthValue()).getBytes());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+
+            try {
+
+                logger.error("{} recieved for Task {}", response.getStatusCode(), taskId);
+                sendResultToEvalStorage(taskId, String.valueOf(0.0).getBytes());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

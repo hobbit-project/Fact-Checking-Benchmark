@@ -5,7 +5,7 @@ package org.dice.factcheckbenchmark;
  * @author Pavel Smirnov
  */
 
-public class Constants {
+public class BenchmarkConstants {
 
     public static String GIT_REPO_PATH = "git.project-hobbit.eu:4567/oshando/";
     //public static String GIT_REPO_PATH = "";
@@ -20,6 +20,9 @@ public class Constants {
     public static final String EVALMODULE_IMAGE_NAME = GIT_REPO_PATH + PROJECT_NAME + "eval-module";
     public static final String SYSTEM_IMAGE_NAME = GIT_REPO_PATH + PROJECT_NAME + "system-adapter";
 
+    public static final String FACTCHECK_SERVICE_IMAGE_NAME = GIT_REPO_PATH + PROJECT_NAME + "factcheck-service";
+    public static final String FACTCHECK_DATABASE_IMAGE_NAME = GIT_REPO_PATH + PROJECT_NAME + "factcheck-database";
+
     public static final String BENCHMARK_URI = "http://project-hobbit.eu/" + PROJECT_NAME;
     public static final String SYSTEM_URI = "http://project-hobbit.eu/" + PROJECT_NAME + "system";
 
@@ -28,8 +31,8 @@ public class Constants {
     public static final String SDK_WORK_DIR_PATH = "/usr/src/" + PROJECT_NAME;
 
     //Directory path and jar file name for factcheck-api container
-    public static final String API_DATA_DIR_PATH = "factcheck-data/api/";
-    public static final String API_JAR_NAME = "factcheck-api-1.0.2.jar";
+    public static final String API_DATA_DIR_PATH = "factcheck-data/service/";
+    public static final String API_JAR_NAME = "factcheck-service-1.0.3.jar";
 
     //Directory path and database file name for the factcheck-db container
     public static final String DB_DATA_DIR_PATH = "factcheck-data/db/";

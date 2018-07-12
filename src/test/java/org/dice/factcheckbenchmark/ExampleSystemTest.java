@@ -1,6 +1,7 @@
 package org.dice.factcheckbenchmark;
 
 import org.dice.factcheckbenchmark.system.SystemAdapter;
+import org.dice.factcheckbenchmark.system.container.DatabaseDockersBuilder;
 import org.dice.factcheckbenchmark.system.container.FactcheckDockersBuilder;
 import org.hobbit.core.components.Component;
 import org.hobbit.sdk.EnvironmentVariablesWrapper;
@@ -17,7 +18,7 @@ import org.junit.Test;
 
 import java.util.Date;
 
-import static org.dice.factcheckbenchmark.Constants.*;
+import static org.dice.factcheckbenchmark.BenchmarkConstants.*;
 import static org.hobbit.core.Constants.BENCHMARK_PARAMETERS_MODEL_KEY;
 import static org.hobbit.core.Constants.SYSTEM_PARAMETERS_MODEL_KEY;
 import static org.hobbit.sdk.CommonConstants.EXPERIMENT_URI;
@@ -39,16 +40,13 @@ public class ExampleSystemTest extends EnvironmentVariablesWrapper {
     private ComponentsExecutor componentsExecutor;
     private CommandQueueListener commandQueueListener;
 
-
-
-
     BenchmarkDockerBuilder benchmarkBuilder;
     DataGenDockerBuilder dataGeneratorBuilder;
     TaskGenDockerBuilder taskGeneratorBuilder;
     EvalStorageDockerBuilder evalStorageBuilder;
     SystemAdapterDockerBuilder systemAdapterBuilder;
     EvalModuleDockerBuilder evalModuleBuilder;
-    // DatabaseDockersBuilder databaseBuilder;
+    DatabaseDockersBuilder databaseBuilder;
     FactcheckDockersBuilder factcheckBuilder;
 
 
@@ -60,8 +58,17 @@ public class ExampleSystemTest extends EnvironmentVariablesWrapper {
         evalStorageBuilder = new EvalStorageDockerBuilder(new PullBasedDockersBuilder(EVAL_STORAGE_IMAGE_NAME));
         evalModuleBuilder = new EvalModuleDockerBuilder(new PullBasedDockersBuilder(EVALMODULE_IMAGE_NAME));
         systemAdapterBuilder = new SystemAdapterDockerBuilder(new ExampleDockersBuilder(SystemAdapter.class, SYSTEM_IMAGE_NAME).useCachedImage(useCachedImages));
-        // databaseBuilder = new DatabaseDockersBuilder("database-dockerizer");
+         databaseBuilder = new DatabaseDockersBuilder("database-dockerizer");
         factcheckBuilder = new FactcheckDockersBuilder("api-dockerizer");
+    }
+
+
+    @Test
+    @Ignore
+    public void buildSystemImages() throws Exception {
+        init(false);
+        factcheckBuilder.build().prepareImage();
+        databaseBuilder.build().prepareImage();
     }
 
     @Test

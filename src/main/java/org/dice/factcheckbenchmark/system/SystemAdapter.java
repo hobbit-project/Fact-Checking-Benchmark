@@ -1,6 +1,6 @@
 package org.dice.factcheckbenchmark.system;
 
-import org.apache.jena.rdf.model.NodeIterator;
+import org.dice.factcheckbenchmark.BenchmarkConstants;
 import org.dice.factcheckbenchmark.system.api.Client;
 import org.hobbit.core.Constants;
 import org.hobbit.core.components.AbstractSystemAdapter;
@@ -33,7 +33,7 @@ public class SystemAdapter extends AbstractSystemAdapter {
         // You can access the RDF model this.systemParamModel to retrieve meta data about this system adapter
 
         //Create factcheck-database container
-        databaseContainer = createContainer("git.project-hobbit.eu:4567/oshando/factcheck-benchmark/factcheck-mysql", Constants.CONTAINER_TYPE_DATABASE,
+        databaseContainer = createContainer(BenchmarkConstants.FACTCHECK_DATABASE_IMAGE_NAME, Constants.CONTAINER_TYPE_DATABASE,
                 new String[]{});
 
         if (databaseContainer.isEmpty()) {
@@ -42,18 +42,18 @@ public class SystemAdapter extends AbstractSystemAdapter {
         } else
             logger.debug("Database container created {}", databaseContainer);
 
-        //Create factcheck-api container
-        factcheckContainer = createContainer("git.project-hobbit.eu:4567/oshando/factcheck-benchmark/factcheck-api", Constants.CONTAINER_TYPE_SYSTEM,
+        //Create factcheck-service container
+        factcheckContainer = createContainer(BenchmarkConstants.FACTCHECK_SERVICE_IMAGE_NAME, Constants.CONTAINER_TYPE_SYSTEM,
                 new String[]{});
 
         if (factcheckContainer.isEmpty()) {
-            logger.debug("Error while creating API container {}", factcheckContainer);
-            throw new Exception("API container not created");
+            logger.debug("Error while creating factcheck-service container {}", factcheckContainer);
+            throw new Exception("Service container not created");
         } else {
-            logger.debug("factcheck-api container created {}", factcheckContainer);
+            logger.debug("factcheck-service container created {}", factcheckContainer);
             factcheckContainerUrl = "http://" + factcheckContainer + ":8080/api/hobbitTask/";
 
-            logger.debug("factcheck-api container accessible from {}", factcheckContainerUrl);
+            logger.debug("factcheck-service container accessible from {}", factcheckContainerUrl);
         }
     }
 
@@ -83,14 +83,29 @@ public class SystemAdapter extends AbstractSystemAdapter {
 
         Client client = new Client(map, MediaType.MULTIPART_FORM_DATA, url);
         ResponseEntity<FactCheckHobbitResponse> response = client.getResponse(HttpMethod.POST);
-        FactCheckHobbitResponse result = response.getBody();
 
-        try {
-            logger.debug("sendResultToEvalStorage({})->{}", taskId, result.getTruthValue());
-            sendResultToEvalStorage(taskId, String.valueOf(result.getTruthValue()).getBytes());
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (response.getStatusCode().equals(HttpStatus.OK)) {
+
+            FactCheckHobbitResponse result = response.getBody();
+
+            try {
+                logger.debug("sendResultToEvalStorage({})->{}", taskId, result.getTruthValue());
+                sendResultToEvalStorage(taskId, String.valueOf(result.getTruthValue()).getBytes());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+
+            try {
+
+                logger.error("{} received for Task {}", response.getStatusCode(), taskId);
+                sendResultToEvalStorage(taskId, String.valueOf(0.0).getBytes());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
+
+
     }
 
     @Override

@@ -7,7 +7,7 @@
     rdfs:label "FactCheck Benchmark"@en;
     rdfs:comment    "FactCheck Algorithm benchmark"@en;
     hobbit:imageName    "git.project-hobbit.eu:4567/oshando/factcheck-benchmark/benchmark-controller";
-    hobbit:hasAPI <http://project-hobbit.eu/factcheck-benchmark/api>;
+    hobbit:hasAPI <http://project-hobbit.eu/factcheck-benchmark/service>;
     hobbit:version "v1.0"@en;
     hobbit:measuresKPI <http://project-hobbit.eu/factcheck-benchmark/precision>;
     hobbit:measuresKPI <http://project-hobbit.eu/factcheck-benchmark/recall>;

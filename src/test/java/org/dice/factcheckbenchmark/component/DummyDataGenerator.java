@@ -1,4 +1,5 @@
-package org.dice.factcheckbenchmark.benchmark;
+package org.dice.factcheckbenchmark.component;
+
 
 import org.dice.factcheckbenchmark.BenchmarkConstants;
 import org.hobbit.core.components.AbstractDataGenerator;
@@ -11,8 +12,11 @@ import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 
-public class DataGenerator extends AbstractDataGenerator {
-    private static final Logger logger = LoggerFactory.getLogger(DataGenerator.class);
+import static org.dice.factcheckbenchmark.BenchmarkConstants.API_DATA_DIR_PATH;
+import static org.dice.factcheckbenchmark.BenchmarkConstants.API_JAR_NAME;
+
+public class DummyDataGenerator extends AbstractDataGenerator {
+    private static final Logger logger = LoggerFactory.getLogger(org.dice.factcheckbenchmark.benchmark.DataGenerator.class);
     private String FACTBENCH_DIRECTORY;
 
     @Override
@@ -22,12 +26,12 @@ public class DataGenerator extends AbstractDataGenerator {
         logger.debug("Init()");
 
         //Extract data set configuration from environment variables
-        final String DATA_GENERATOR_DIR = BenchmarkConstants.SDK_WORK_DIR_PATH + "data/";
+        final String DATA_GENERATOR_DIR = Paths.get("data/factbench/").toFile().getAbsolutePath() + File.separator;
         String factcbenchPath = System.getenv(BenchmarkConstants.ENV_FACTBENCH_DATA_SET);
 
         factcbenchPath = (factcbenchPath.substring(factcbenchPath.lastIndexOf("/") + 1)).replace("-", "/");
         FACTBENCH_DIRECTORY = DATA_GENERATOR_DIR + factcbenchPath + File.separator;
-        logger.debug("FactBench directory {}", FACTBENCH_DIRECTORY);
+        logger.info("FactBench directory {}", FACTBENCH_DIRECTORY);
         // Your initialization code comes here...
     }
 
@@ -37,7 +41,6 @@ public class DataGenerator extends AbstractDataGenerator {
         // id of this data generator [getGeneratorId()] and the number of all data generators [getNumberOfGenerators()]
         // running in parallel.
         logger.debug("generateData()");
-        logger.info("Walking across {}", FACTBENCH_DIRECTORY);
         sendDataFromDirectory(Paths.get(FACTBENCH_DIRECTORY));
     }
 

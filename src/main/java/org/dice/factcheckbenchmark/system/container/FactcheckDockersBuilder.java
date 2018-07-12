@@ -1,6 +1,6 @@
 package org.dice.factcheckbenchmark.system.container;
 
-import org.dice.factcheckbenchmark.Constants;
+import org.dice.factcheckbenchmark.BenchmarkConstants;
 import org.hobbit.sdk.docker.BuildBasedDockerizer;
 import org.hobbit.sdk.docker.builders.BuildBasedDockersBuilder;
 
@@ -9,8 +9,8 @@ import java.io.StringReader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static org.dice.factcheckbenchmark.Constants.API_DATA_DIR_PATH;
-import static org.dice.factcheckbenchmark.Constants.API_JAR_NAME;
+import static org.dice.factcheckbenchmark.BenchmarkConstants.API_DATA_DIR_PATH;
+import static org.dice.factcheckbenchmark.BenchmarkConstants.API_JAR_NAME;
 
 public class FactcheckDockersBuilder extends BuildBasedDockersBuilder {
 
@@ -20,7 +20,7 @@ public class FactcheckDockersBuilder extends BuildBasedDockersBuilder {
     public FactcheckDockersBuilder(String dockerizerName) {
         super(dockerizerName);
 
-        imageName(Constants.GIT_REPO_PATH + Constants.PROJECT_NAME + "factcheck-api");
+        imageName(BenchmarkConstants.FACTCHECK_SERVICE_IMAGE_NAME);
         //name for searching in logs
         containerName("factcheck-container");
         //temp docker file will be created there
@@ -64,7 +64,7 @@ public class FactcheckDockersBuilder extends BuildBasedDockersBuilder {
         Path jarFilePath = Paths.get(API_DATA_DIR_PATH + API_JAR_NAME);
 
         if (!jarFilePath.toFile().exists()) {
-            throw new Exception(jarFilePath + " not found. Ensure that factcheck-api jar is in the right directory.");
+            throw new Exception(jarFilePath + " not found. Ensure that "+API_DATA_DIR_PATH + API_JAR_NAME+ " is in the right directory.");
         } else {
 
             String content = "FROM openjdk:8-jdk-alpine\n" +

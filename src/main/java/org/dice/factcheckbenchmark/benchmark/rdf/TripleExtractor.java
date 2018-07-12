@@ -5,12 +5,6 @@ import org.apache.jena.rdf.model.*;
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
-import static org.dice.factcheckbenchmark.Constants.API_DATA_DIR_PATH;
-import static org.dice.factcheckbenchmark.Constants.API_JAR_NAME;
 
 /**
  * @author DANISH AHMED on 3/22/2018

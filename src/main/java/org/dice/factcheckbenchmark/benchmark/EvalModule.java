@@ -3,10 +3,10 @@ package org.dice.factcheckbenchmark.benchmark;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.vocabulary.RDF;
+import org.dice.factcheckbenchmark.BenchmarkConstants;
 import org.dice.factcheckbenchmark.benchmark.roc.ROCCurve;
 import org.dice.factcheckbenchmark.benchmark.roc.ROCEvaluator;
 import org.hobbit.core.components.AbstractEvaluationModule;
-import org.dice.factcheckbenchmark.Constants;
 import org.hobbit.vocab.HOBBIT;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,41 +44,41 @@ public class EvalModule extends AbstractEvaluationModule {
         super.init();
         Map<String, String> env = System.getenv();
 
-        if (!env.containsKey(Constants.ENV_KPI_ACCURACY)) {
-            throw new IllegalArgumentException("Couldn't get \"" + Constants.ENV_KPI_ACCURACY
+        if (!env.containsKey(BenchmarkConstants.ENV_KPI_ACCURACY)) {
+            throw new IllegalArgumentException("Couldn't get \"" + BenchmarkConstants.ENV_KPI_ACCURACY
                     + "\" from the environment. Aborting.");
         }
-        EVAL_ACCURACY = this.model.createProperty(env.get(Constants.ENV_KPI_ACCURACY));
+        EVAL_ACCURACY = this.model.createProperty(env.get(BenchmarkConstants.ENV_KPI_ACCURACY));
 
-        if (!env.containsKey(Constants.ENV_KPI_ROC_AUC)) {
-            throw new IllegalArgumentException("Couldn't get \"" + Constants.ENV_KPI_ROC_AUC
+        if (!env.containsKey(BenchmarkConstants.ENV_KPI_ROC_AUC)) {
+            throw new IllegalArgumentException("Couldn't get \"" + BenchmarkConstants.ENV_KPI_ROC_AUC
                     + "\" from the environment. Aborting.");
         }
-        EVAL_ROC_AUC = this.model.createProperty(env.get(Constants.ENV_KPI_ROC_AUC));
+        EVAL_ROC_AUC = this.model.createProperty(env.get(BenchmarkConstants.ENV_KPI_ROC_AUC));
 
-        if (!env.containsKey(Constants.ENV_KPI_EVALUATION_TIME)) {
-            throw new IllegalArgumentException("Couldn't get \"" + Constants.ENV_KPI_EVALUATION_TIME
+        if (!env.containsKey(BenchmarkConstants.ENV_KPI_EVALUATION_TIME)) {
+            throw new IllegalArgumentException("Couldn't get \"" + BenchmarkConstants.ENV_KPI_EVALUATION_TIME
                     + "\" from the environment. Aborting.");
         }
-        EVAL_RUN_TIME = this.model.createProperty(env.get(Constants.ENV_KPI_EVALUATION_TIME));
+        EVAL_RUN_TIME = this.model.createProperty(env.get(BenchmarkConstants.ENV_KPI_EVALUATION_TIME));
 
-        if (!env.containsKey(Constants.ENV_KPI_PRECISION)) {
-            throw new IllegalArgumentException("Couldn't get \"" + Constants.ENV_KPI_PRECISION
+        if (!env.containsKey(BenchmarkConstants.ENV_KPI_PRECISION)) {
+            throw new IllegalArgumentException("Couldn't get \"" + BenchmarkConstants.ENV_KPI_PRECISION
                     + "\" from the environment. Aborting.");
         }
-        EVAL_PRECISION = this.model.createProperty(env.get(Constants.ENV_KPI_PRECISION));
+        EVAL_PRECISION = this.model.createProperty(env.get(BenchmarkConstants.ENV_KPI_PRECISION));
 
-        if (!env.containsKey(Constants.ENV_KPI_RECALL)) {
-            throw new IllegalArgumentException("Couldn't get \"" + Constants.ENV_KPI_RECALL
+        if (!env.containsKey(BenchmarkConstants.ENV_KPI_RECALL)) {
+            throw new IllegalArgumentException("Couldn't get \"" + BenchmarkConstants.ENV_KPI_RECALL
                     + "\" from the environment. Aborting.");
         }
-        EVAL_RECALL = this.model.createProperty(env.get(Constants.ENV_KPI_RECALL));
+        EVAL_RECALL = this.model.createProperty(env.get(BenchmarkConstants.ENV_KPI_RECALL));
 
-        if (!env.containsKey(Constants.ENV_FACTCHECK_THRESHOLD)) {
-            throw new IllegalArgumentException("Couldn't get \"" + Constants.ENV_FACTCHECK_THRESHOLD
+        if (!env.containsKey(BenchmarkConstants.ENV_FACTCHECK_THRESHOLD)) {
+            throw new IllegalArgumentException("Couldn't get \"" + BenchmarkConstants.ENV_FACTCHECK_THRESHOLD
                     + "\" from the environment. Aborting.");
         }
-        FACTCHECK_THRESHOLD = Double.parseDouble(env.get(Constants.ENV_FACTCHECK_THRESHOLD));
+        FACTCHECK_THRESHOLD = Double.parseDouble(env.get(BenchmarkConstants.ENV_FACTCHECK_THRESHOLD));
 
         logger.debug("Using FactCheck threshold value {}", FACTCHECK_THRESHOLD);
     }
@@ -144,27 +144,27 @@ public class EvalModule extends AbstractEvaluationModule {
         //Accuracy literal
         Literal accuracyLiteral = model.createTypedLiteral(accuracy, XSDDatatype.XSDdouble);
         model.add(experimentResource, EVAL_ACCURACY, accuracyLiteral);
-        logger.debug(Constants.ENV_KPI_ACCURACY + " added to model: " + accuracy);
+        logger.debug(BenchmarkConstants.ENV_KPI_ACCURACY + " added to model: " + accuracy);
 
         //ROC/AUC literal
         Literal rocAucLiteral = model.createTypedLiteral(rocCurve.calculateAUC(), XSDDatatype.XSDdouble);
         model.add(experimentResource, EVAL_ROC_AUC, rocAucLiteral);
-        logger.debug(Constants.ENV_KPI_ROC_AUC + " added to model: " + rocCurve.calculateAUC());
+        logger.debug(BenchmarkConstants.ENV_KPI_ROC_AUC + " added to model: " + rocCurve.calculateAUC());
 
         //Runtime literal
         Literal timeLiteral = model.createTypedLiteral(totalRunTime, XSDDatatype.XSDlong);
         model.add(experimentResource, EVAL_RUN_TIME, timeLiteral);
-        logger.debug(Constants.ENV_KPI_EVALUATION_TIME + " added to model: " + totalRunTime);
+        logger.debug(BenchmarkConstants.ENV_KPI_EVALUATION_TIME + " added to model: " + totalRunTime);
 
         //Recall literal
         Literal recallLiteral = model.createTypedLiteral(recall, XSDDatatype.XSDdouble);
         model.add(experimentResource, EVAL_RECALL, recallLiteral);
-        logger.debug(Constants.ENV_KPI_RECALL + " added to model: " + recall);
+        logger.debug(BenchmarkConstants.ENV_KPI_RECALL + " added to model: " + recall);
 
         //Precision literal
         Literal precisionLiteral = model.createTypedLiteral(precision, XSDDatatype.XSDlong);
         model.add(experimentResource, EVAL_PRECISION, precisionLiteral);
-        logger.debug(Constants.ENV_KPI_PRECISION + " added to model: " + precision);
+        logger.debug(BenchmarkConstants.ENV_KPI_PRECISION + " added to model: " + precision);
 
         return model;
     }

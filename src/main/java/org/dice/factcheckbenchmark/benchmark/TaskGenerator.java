@@ -15,6 +15,7 @@ public class TaskGenerator extends AbstractSequencingTaskGenerator {
         // Always init the super class first!
         super.init();
         logger.debug("Init()");
+        setAckTimeout(150000L);
         // Your initialization code comes here...
     }
 

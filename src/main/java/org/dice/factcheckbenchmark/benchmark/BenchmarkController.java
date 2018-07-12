@@ -2,7 +2,7 @@ package org.dice.factcheckbenchmark.benchmark;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.jena.rdf.model.NodeIterator;
-import org.dice.factcheckbenchmark.Constants;
+import org.dice.factcheckbenchmark.BenchmarkConstants;
 import org.hobbit.core.Commands;
 import org.hobbit.core.components.AbstractBenchmarkController;
 import org.hobbit.sdk.JenaKeyValue;
@@ -33,25 +33,25 @@ public class BenchmarkController extends AbstractBenchmarkController {
             Obtain FactBench data set from param model
          */
         NodeIterator iterator = benchmarkParamModel.listObjectsOfProperty(benchmarkParamModel
-                .getProperty(Constants.URI_FACTBENCH_DATA_SET));
+                .getProperty(BenchmarkConstants.URI_FACTBENCH_DATA_SET));
 
-        String dataSet = "http://project-hobbit.eu/factcheck-benchmark/test";
-        /*if (iterator.hasNext()) {
+        String dataSet = "http://project-hobbit.eu/factcheck-benchmark/train";
+        if (iterator.hasNext()) {
             try {
 
                 dataSet = iterator.next().asResource().getURI();
                 logger.debug("Dataset {} selected", dataSet);
 
             } catch (Exception e) {
-                logger.debug("Couldn't get " + Constants.URI_FACTBENCH_DATA_SET + " parameter from parameter model.", e);
+                logger.debug("Couldn't get " + BenchmarkConstants.URI_FACTBENCH_DATA_SET + " parameter from parameter model.", e);
             }
-        }*/
+        }
 
         /*
             Obtain threshold for Factcheck
          */
         iterator = benchmarkParamModel.listObjectsOfProperty(benchmarkParamModel
-                .getProperty(Constants.URI_FACTCHECK_THRESHOLD));
+                .getProperty(BenchmarkConstants.URI_FACTCHECK_THRESHOLD));
 
         FACTCHECK_THRESHOLD = 0.2;
         if (iterator.hasNext()) {
@@ -61,7 +61,7 @@ public class BenchmarkController extends AbstractBenchmarkController {
                 logger.debug("Factcheck threshold {} set", FACTCHECK_THRESHOLD);
 
             } catch (Exception e) {
-                logger.debug("Couldn't get " + Constants.URI_FACTCHECK_THRESHOLD + " parameter from model.", e);
+                logger.debug("Couldn't get " + BenchmarkConstants.URI_FACTCHECK_THRESHOLD + " parameter from model.", e);
             }
         }
 
@@ -70,10 +70,10 @@ public class BenchmarkController extends AbstractBenchmarkController {
         // Create data generators
 
         int numberOfDataGenerators = 1;
-        String[] envVariables = new String[]{Constants.ENV_FACTBENCH_DATA_SET + "=" + dataSet};
+        String[] envVariables = new String[]{BenchmarkConstants.ENV_FACTBENCH_DATA_SET + "=" + dataSet};
 
         logger.debug("createDataGenerators()");
-        createDataGenerators(Constants.DATAGEN_IMAGE_NAME, numberOfDataGenerators, envVariables);
+        createDataGenerators(BenchmarkConstants.DATAGEN_IMAGE_NAME, numberOfDataGenerators, envVariables);
 
 
         // Create task generators
@@ -81,7 +81,7 @@ public class BenchmarkController extends AbstractBenchmarkController {
         envVariables = new String[]{"key1=value1"};
 
         logger.debug("createTaskGenerators()");
-        createTaskGenerators(Constants.TASKGEN_IMAGE_NAME, numberOfTaskGenerators, envVariables);
+        createTaskGenerators(BenchmarkConstants.TASKGEN_IMAGE_NAME, numberOfTaskGenerators, envVariables);
 
         // Create evaluation storage
         logger.debug("createEvaluationStorage()");
@@ -90,7 +90,7 @@ public class BenchmarkController extends AbstractBenchmarkController {
         //or simplified local-one from the SDK
         envVariables = (String[]) ArrayUtils.add(DEFAULT_EVAL_STORAGE_PARAMETERS, "HOBBIT_RABBIT_HOST=" + this.rabbitMQHostName);
         envVariables = (String[]) org.apache.commons.lang.ArrayUtils.add(envVariables, "ACKNOWLEDGEMENT_FLAG=true");
-        this.createEvaluationStorage(Constants.EVAL_STORAGE_IMAGE_NAME, envVariables);
+        this.createEvaluationStorage(BenchmarkConstants.EVAL_STORAGE_IMAGE_NAME, envVariables);
 
         // Wait for all components to finish their initialization
         waitForComponents();
@@ -131,13 +131,13 @@ public class BenchmarkController extends AbstractBenchmarkController {
 
         // Create the evaluation module
 
-        String[] envVariables = new String[]{Constants.ENV_KPI_ACCURACY + "=" + Constants.URI_KPI_ACCURACY,
-                Constants.ENV_KPI_ROC_AUC + "=" + Constants.URI_KPI_ROC_AUC,
-                Constants.ENV_KPI_EVALUATION_TIME + "=" + Constants.URI_KPI_EVALUATION_TIME,
-                Constants.ENV_KPI_RECALL + "=" + Constants.URI_KPI_RECALL,
-                Constants.ENV_KPI_PRECISION + "=" + Constants.URI_KPI_PRECISION,
-                Constants.ENV_FACTCHECK_THRESHOLD + "=" + String.valueOf(FACTCHECK_THRESHOLD)};
-        createEvaluationModule(Constants.EVALMODULE_IMAGE_NAME, envVariables);
+        String[] envVariables = new String[]{BenchmarkConstants.ENV_KPI_ACCURACY + "=" + BenchmarkConstants.URI_KPI_ACCURACY,
+                BenchmarkConstants.ENV_KPI_ROC_AUC + "=" + BenchmarkConstants.URI_KPI_ROC_AUC,
+                BenchmarkConstants.ENV_KPI_EVALUATION_TIME + "=" + BenchmarkConstants.URI_KPI_EVALUATION_TIME,
+                BenchmarkConstants.ENV_KPI_RECALL + "=" + BenchmarkConstants.URI_KPI_RECALL,
+                BenchmarkConstants.ENV_KPI_PRECISION + "=" + BenchmarkConstants.URI_KPI_PRECISION,
+                BenchmarkConstants.ENV_FACTCHECK_THRESHOLD + "=" + String.valueOf(FACTCHECK_THRESHOLD)};
+        createEvaluationModule(BenchmarkConstants.EVALMODULE_IMAGE_NAME, envVariables);
 
         // wait for the evaluation to finish
         waitForEvalComponentsToFinish();

@@ -8,6 +8,6 @@
 <http://project-hobbit.eu/factcheck-benchmark/factcheck>	a	hobbit:SystemInstance;
     rdfs:label	"FactCheck"@en;
 	rdfs:comment "FactCheck"@en;
-	hobbit:implementsAPI <http://project-hobbit.eu/factcheck-benchmark/api>;
+	hobbit:implementsAPI <http://project-hobbit.eu/factcheck-benchmark/service>;
 	hobbit:imageName "git.project-hobbit.eu:4567/oshando/factcheck-benchmark/system-adapter";
 
