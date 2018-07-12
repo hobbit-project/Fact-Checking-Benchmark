@@ -10,7 +10,7 @@ import java.io.Serializable;
 public class FactCheckHobbitResponse {
     private String taskId;
     private double truthValue = 0.0;
-
+    private final String dataSet = "factbench";
     private String responseData;
 
 
@@ -19,7 +19,7 @@ public class FactCheckHobbitResponse {
                                    @JsonProperty("responseData") String responseData,
                                    @JsonProperty("truthValue")  double truthValue) {
         this.taskId = taskId;
-        this.responseData = responseData.replaceAll("dataset/", "dataset/" + System.getenv(BenchmarkConstants.ENV_FACTBENCH_DATA_SET));
+        this.responseData = responseData.replaceAll("dataset/", "dataset/" + dataSet);
         this.truthValue = truthValue;
     }
 

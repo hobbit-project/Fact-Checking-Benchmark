@@ -23,8 +23,8 @@ public class BenchmarkConstants {
     public static final String FACTCHECK_SERVICE_IMAGE_NAME = GIT_REPO_PATH + PROJECT_NAME + "factcheck-service";
     public static final String FACTCHECK_DATABASE_IMAGE_NAME = GIT_REPO_PATH + PROJECT_NAME + "factcheck-database";
 
-    public static final String BENCHMARK_URI = "http://project-hobbit.eu/" + PROJECT_NAME;
-    public static final String SYSTEM_URI = "http://project-hobbit.eu/" + PROJECT_NAME + "system";
+    public static final String BENCHMARK_URI = "http://dice.cs.uni-paderborn.de/" + PROJECT_NAME;
+    public static final String SYSTEM_URI = "http://dice.cs.uni-paderborn.de/" + PROJECT_NAME + "system";
 
     public static final String SDK_BUILD_DIR_PATH = ".";  //build directory, temp docker file will be created there
     public static final String SDK_JAR_FILE_PATH = "target/factcheck-benchmark-1.0.3.jar"; //should be packaged will all dependencies (via 'mvn package -DskipTests=true' command)
@@ -32,7 +32,7 @@ public class BenchmarkConstants {
 
     //Directory path and jar file name for factcheck-api container
     public static final String API_DATA_DIR_PATH = "factcheck-data/service/";
-    public static final String API_JAR_NAME = "factcheck-service-1.0.3.jar";
+    public static final String API_JAR_NAME = "factcheck-service-1.0.4.jar";
 
     //Directory path and database file name for the factcheck-db container
     public static final String DB_DATA_DIR_PATH = "factcheck-data/db/";
@@ -41,16 +41,17 @@ public class BenchmarkConstants {
     public static final String ENV_KPI_RECALL = "EVALUATION_RECALL";
     public static final String ENV_KPI_PRECISION = "EVALUATION_PRECISION";
     public static final String ENV_KPI_ACCURACY = "EVALUATION_ACCURACY";
-    public static final String ENV_KPI_ROC_AUC = "EVALUATION_ROC_AUC";
+    public static final String ENV_KPI_AUC = "EVALUATION_AUC";
+    public static final String ENV_KPI_ROC = "EVALUATION_ROC";
     public static final String ENV_KPI_EVALUATION_TIME = "EVALUATION_TIME";
 
     //Evaluation Module URIs and environment variables
     public static final String URI_KPI_RECALL = BENCHMARK_URI + "recall";
     public static final String URI_KPI_PRECISION = BENCHMARK_URI + "precision";
     public static final String URI_KPI_ACCURACY = BENCHMARK_URI + "accuracy";
-    public static final String URI_KPI_ROC_AUC = BENCHMARK_URI + "aucRoc";
+    public static final String URI_KPI_ROC = BENCHMARK_URI + "roc";
+    public static final String URI_KPI_AUC = BENCHMARK_URI + "auc";
     public static final String URI_KPI_EVALUATION_TIME = BENCHMARK_URI + "runTime";
-
 
     public static final String ENV_FACTBENCH_DATA_SET = "FACTBENCH_DATA_SET";
     public static final String URI_FACTBENCH_DATA_SET = BENCHMARK_URI + "dataSet";
