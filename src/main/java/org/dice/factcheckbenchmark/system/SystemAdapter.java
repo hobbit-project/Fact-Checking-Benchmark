@@ -70,16 +70,10 @@ public class SystemAdapter extends AbstractSystemAdapter {
         // handle the incoming task and create a result
         logger.debug("receiveGeneratedTask({})->{}", taskId, new String(data));
 
-        final String REGEX_SEPARATOR = ":\\*:";
-        String[] split = taskId.split(REGEX_SEPARATOR);
-        String urlTaskId = split[0];
-        String fileTrace = split[1];
-
         //String url = "http://localhost:8080/api/hobbitTask/" + urlTaskId;
-        String url = factcheckContainerUrl + urlTaskId;
+        String url = factcheckContainerUrl + taskId;
         MultiValueMap<String, Object> map = new LinkedMultiValueMap<String, Object>();
         map.add("dataISWC", data);
-        map.add("fileTrace", fileTrace);
 
         Client client = new Client(map, MediaType.MULTIPART_FORM_DATA, url);
         ResponseEntity<FactCheckHobbitResponse> response = client.getResponse(HttpMethod.POST);

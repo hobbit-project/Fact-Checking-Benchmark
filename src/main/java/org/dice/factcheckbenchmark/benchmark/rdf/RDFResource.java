@@ -1,6 +1,8 @@
 package org.dice.factcheckbenchmark.benchmark.rdf;
 
 import org.apache.jena.rdf.model.*;
+import org.apache.jena.vocabulary.OWL;
+import org.apache.jena.vocabulary.RDFS;
 
 import java.util.*;
 
@@ -14,9 +16,9 @@ public class RDFResource {
     protected String label;
     public String uri;
 
-    private Property owlSameAsProperty = ResourceFactory.createProperty(Constants.OWL_NAMESPACE + "sameAs");
+    private Property owlSameAsProperty = OWL.sameAs;
 
-    public List<Resource> owlSameAsList = new ArrayList<Resource>();     // only considering english for now
+    public HashSet<Resource> owlSameAsList = new HashSet<Resource>();     // only considering english for now
     public Map<String, String> langLabelsMap = new HashMap<String, String>();
 
     /**
@@ -30,7 +32,7 @@ public class RDFResource {
         this.model = model;
 
         // set labels w.r.t language
-        Property labelProperty = ResourceFactory.createProperty(Constants.RDF_SCHEMA_NAMESPACE + "label");
+        Property labelProperty = RDFS.label;
         NodeIterator labelNodeIterator = this.model.listObjectsOfProperty(this.resource, labelProperty);
 
         // set sameAs resource list
@@ -58,7 +60,8 @@ public class RDFResource {
         NodeIterator nodeIterator = model.listObjectsOfProperty(this.resource, this.owlSameAsProperty);
         while (nodeIterator.hasNext()) {
             RDFNode rdfNode = nodeIterator.nextNode();
-            owlSameAsList.add(rdfNode.asResource());
+            if (rdfNode.isURIResource())
+                owlSameAsList.add(rdfNode.asResource());
         }
     }
 
@@ -69,15 +72,15 @@ public class RDFResource {
      */
     public static String getDBpediaUri(RDFResource resource) {
         String uri = resource.uri;
-        if (uri.contains(Constants.DBPEDIA_URI))
+        if (uri.startsWith(Constants.DBPEDIA_URI))
             return uri;
 
-        List<Resource> subjectSameAsList = resource.owlSameAsList;
+        HashSet<Resource> subjectSameAsList = resource.owlSameAsList;
         String subjectUri = "";
 
         for (Resource rsc : subjectSameAsList) {
-            if (rsc.toString().contains(Constants.DBPEDIA_URI)) {
-                subjectUri = rsc.toString();
+            if (rsc.getURI().startsWith(Constants.DBPEDIA_URI)) {
+                return rsc.toString();
             }
         }
         return subjectUri;
