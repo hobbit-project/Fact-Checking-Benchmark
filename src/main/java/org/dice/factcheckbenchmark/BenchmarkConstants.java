@@ -32,7 +32,7 @@ public class BenchmarkConstants {
 
     //Directory path and jar file name for factcheck-api container
     public static final String API_DATA_DIR_PATH = "factcheck-data/service/";
-    public static final String API_JAR_NAME = "factcheck-service-1.0.4.jar";
+    public static final String API_JAR_NAME = "factcheck-service-1.0.3.jar";
 
     //Directory path and database file name for the factcheck-db container
     public static final String DB_DATA_DIR_PATH = "factcheck-data/db/";
