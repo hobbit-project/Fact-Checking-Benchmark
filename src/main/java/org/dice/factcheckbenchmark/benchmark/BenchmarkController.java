@@ -35,7 +35,7 @@ public class BenchmarkController extends AbstractBenchmarkController {
         NodeIterator iterator = benchmarkParamModel.listObjectsOfProperty(benchmarkParamModel
                 .getProperty(BenchmarkConstants.URI_FACTBENCH_DATA_SET));
 
-        String dataSet = "http://project-hobbit.eu/factcheck-benchmark/train";
+        String dataSet = "http://project-hobbit.eu/factcheck-benchmark/evaluation";
         if (iterator.hasNext()) {
             try {
 
@@ -132,7 +132,8 @@ public class BenchmarkController extends AbstractBenchmarkController {
         // Create the evaluation module
 
         String[] envVariables = new String[]{BenchmarkConstants.ENV_KPI_ACCURACY + "=" + BenchmarkConstants.URI_KPI_ACCURACY,
-                BenchmarkConstants.ENV_KPI_ROC_AUC + "=" + BenchmarkConstants.URI_KPI_ROC_AUC,
+                BenchmarkConstants.ENV_KPI_ROC + "=" + BenchmarkConstants.URI_KPI_ROC,
+                BenchmarkConstants.ENV_KPI_AUC + "=" + BenchmarkConstants.URI_KPI_AUC,
                 BenchmarkConstants.ENV_KPI_EVALUATION_TIME + "=" + BenchmarkConstants.URI_KPI_EVALUATION_TIME,
                 BenchmarkConstants.ENV_KPI_RECALL + "=" + BenchmarkConstants.URI_KPI_RECALL,
                 BenchmarkConstants.ENV_KPI_PRECISION + "=" + BenchmarkConstants.URI_KPI_PRECISION,

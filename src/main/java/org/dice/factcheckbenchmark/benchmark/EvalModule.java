@@ -32,7 +32,8 @@ public class EvalModule extends AbstractEvaluationModule {
 
     private Property EVAL_ACCURACY = null;
     private Property EVAL_RUN_TIME = null;
-    private Property EVAL_ROC_AUC = null;
+    private Property EVAL_AUC = null;
+    private Property EVAL_ROC = null;
     private Property EVAL_PRECISION = null;
     private Property EVAL_RECALL = null;
 
@@ -50,11 +51,17 @@ public class EvalModule extends AbstractEvaluationModule {
         }
         EVAL_ACCURACY = this.model.createProperty(env.get(BenchmarkConstants.ENV_KPI_ACCURACY));
 
-        if (!env.containsKey(BenchmarkConstants.ENV_KPI_ROC_AUC)) {
-            throw new IllegalArgumentException("Couldn't get \"" + BenchmarkConstants.ENV_KPI_ROC_AUC
+        if (!env.containsKey(BenchmarkConstants.ENV_KPI_AUC)) {
+            throw new IllegalArgumentException("Couldn't get \"" + BenchmarkConstants.ENV_KPI_AUC
                     + "\" from the environment. Aborting.");
         }
-        EVAL_ROC_AUC = this.model.createProperty(env.get(BenchmarkConstants.ENV_KPI_ROC_AUC));
+        EVAL_AUC = this.model.createProperty(env.get(BenchmarkConstants.ENV_KPI_AUC));
+
+        if (!env.containsKey(BenchmarkConstants.ENV_KPI_ROC)) {
+            throw new IllegalArgumentException("Couldn't get \"" + BenchmarkConstants.ENV_KPI_ROC
+                    + "\" from the environment. Aborting.");
+        }
+        EVAL_ROC = this.model.createProperty(env.get(BenchmarkConstants.ENV_KPI_ROC));
 
         if (!env.containsKey(BenchmarkConstants.ENV_KPI_EVALUATION_TIME)) {
             throw new IllegalArgumentException("Couldn't get \"" + BenchmarkConstants.ENV_KPI_EVALUATION_TIME
@@ -146,10 +153,15 @@ public class EvalModule extends AbstractEvaluationModule {
         model.add(experimentResource, EVAL_ACCURACY, accuracyLiteral);
         logger.debug(BenchmarkConstants.ENV_KPI_ACCURACY + " added to model: " + accuracy);
 
-        //ROC/AUC literal
-        Literal rocAucLiteral = model.createTypedLiteral(rocCurve.calculateAUC(), XSDDatatype.XSDdouble);
-        model.add(experimentResource, EVAL_ROC_AUC, rocAucLiteral);
-        logger.debug(BenchmarkConstants.ENV_KPI_ROC_AUC + " added to model: " + rocCurve.calculateAUC());
+        //AUC literal
+        Literal aucLiteral = model.createTypedLiteral(rocCurve.calculateAUC(), XSDDatatype.XSDdouble);
+        model.add(experimentResource, EVAL_AUC, aucLiteral);
+        logger.debug(BenchmarkConstants.ENV_KPI_AUC + " added to model: " + rocCurve.calculateAUC());
+
+        //AUC literal
+        Literal rocLiteral = model.createTypedLiteral(rocCurve.toString(), XSDDatatype.XSDstring);
+        model.add(experimentResource, EVAL_ROC, rocLiteral);
+        logger.debug(BenchmarkConstants.ENV_KPI_ROC + " added to model: " + rocCurve.toString());
 
         //Runtime literal
         Literal timeLiteral = model.createTypedLiteral(totalRunTime, XSDDatatype.XSDlong);

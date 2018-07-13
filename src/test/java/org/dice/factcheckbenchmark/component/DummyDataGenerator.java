@@ -26,7 +26,7 @@ public class DummyDataGenerator extends AbstractDataGenerator {
         logger.debug("Init()");
 
         //Extract data set configuration from environment variables
-        final String DATA_GENERATOR_DIR = Paths.get("data/factbench/").toFile().getAbsolutePath() + File.separator;
+        final String DATA_GENERATOR_DIR = Paths.get("data/factbench").toFile().getAbsolutePath() + File.separator;
         String factcbenchPath = System.getenv(BenchmarkConstants.ENV_FACTBENCH_DATA_SET);
 
         factcbenchPath = (factcbenchPath.substring(factcbenchPath.lastIndexOf("/") + 1)).replace("-", "/");

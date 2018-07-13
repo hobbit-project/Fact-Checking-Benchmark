@@ -33,7 +33,7 @@ public class DummySystemAdapter extends AbstractSystemAdapter {
         logger.debug("SystemModel: " + parameters.encodeToString());
         // You can access the RDF model this.systemParamModel to retrieve meta data about this system adapter
 
-
+        factcheckContainerUrl = "http://localhost:8080/api/hobbitTask/";
     }
 
     @Override
@@ -49,20 +49,15 @@ public class DummySystemAdapter extends AbstractSystemAdapter {
         // handle the incoming task and create a result
         logger.debug("receiveGeneratedTask({})->{}", taskId, new String(data));
 
-        final String REGEX_SEPARATOR = ":\\*:";
-        String[] split = taskId.split(REGEX_SEPARATOR);
-        String urlTaskId = split[0];
-        String fileTrace = split[1];
-
-        String url = "http://localhost:8080/api/hobbitTask/" + urlTaskId;
         MultiValueMap<String, Object> map = new LinkedMultiValueMap<String, Object>();
         map.add("dataISWC", data);
-        map.add("fileTrace", fileTrace);
+        map.add("taskId", taskId);
 
-        Client client = new Client(map, MediaType.MULTIPART_FORM_DATA, url);
+        Client client = new Client(map, MediaType.MULTIPART_FORM_DATA, factcheckContainerUrl);
         ResponseEntity<FactCheckHobbitResponse> response = client.getResponse(HttpMethod.POST);
 
         if (response.getStatusCode().equals(HttpStatus.OK)) {
+
             FactCheckHobbitResponse result = response.getBody();
 
             try {
@@ -75,7 +70,7 @@ public class DummySystemAdapter extends AbstractSystemAdapter {
 
             try {
 
-                logger.error("{} recieved for Task {}", response.getStatusCode(), taskId);
+                logger.error("{} received for Task {}", response.getStatusCode(), taskId);
                 sendResultToEvalStorage(taskId, String.valueOf(0.0).getBytes());
             } catch (IOException e) {
                 e.printStackTrace();

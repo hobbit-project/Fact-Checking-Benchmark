@@ -1,8 +1,7 @@
 package org.dice.factcheckbenchmark;
 
 import org.dice.factcheckbenchmark.benchmark.*;
-import org.dice.factcheckbenchmark.component.DummyDataGenerator;
-import org.dice.factcheckbenchmark.component.DummySystemAdapter;
+import org.dice.factcheckbenchmark.system.SystemAdapter;
 import org.hobbit.core.components.Component;
 import org.hobbit.sdk.EnvironmentVariablesWrapper;
 import org.hobbit.sdk.JenaKeyValue;
@@ -44,10 +43,10 @@ public class ExampleBenchmarkTest extends EnvironmentVariablesWrapper {
     public void init(Boolean useCachedImage) throws Exception {
 
         benchmarkBuilder = new BenchmarkDockerBuilder(new ExampleDockersBuilder(BenchmarkController.class, BENCHMARK_IMAGE_NAME).useCachedImage(useCachedImage));
-        dataGeneratorBuilder = new DataGenDockerBuilder(new ExampleDockersBuilder(DummyDataGenerator.class, DATAGEN_IMAGE_NAME).useCachedImage(useCachedImage).addFileOrFolder("data"));
+        dataGeneratorBuilder = new DataGenDockerBuilder(new ExampleDockersBuilder(DataGenerator.class, DATAGEN_IMAGE_NAME).useCachedImage(useCachedImage).addFileOrFolder("data"));
         taskGeneratorBuilder = new TaskGenDockerBuilder(new ExampleDockersBuilder(TaskGenerator.class, TASKGEN_IMAGE_NAME).useCachedImage(useCachedImage));
         evalStorageBuilder = new EvalStorageDockerBuilder(new ExampleDockersBuilder(EvalStorage.class, EVAL_STORAGE_IMAGE_NAME).useCachedImage(useCachedImage));
-        systemAdapterBuilder = new SystemAdapterDockerBuilder(new ExampleDockersBuilder(DummySystemAdapter.class, SYSTEM_IMAGE_NAME).useCachedImage(useCachedImage));
+        systemAdapterBuilder = new SystemAdapterDockerBuilder(new ExampleDockersBuilder(SystemAdapter.class, SYSTEM_IMAGE_NAME).useCachedImage(useCachedImage));
         evalModuleBuilder = new EvalModuleDockerBuilder(new ExampleDockersBuilder(EvalModule.class, EVALMODULE_IMAGE_NAME).useCachedImage(useCachedImage));
     }
 
@@ -94,10 +93,10 @@ public class ExampleBenchmarkTest extends EnvironmentVariablesWrapper {
 
 
         Component benchmarkController = new BenchmarkController();
-        Component dataGen = new DummyDataGenerator();
+        Component dataGen = new DataGenerator();
         Component taskGen = new TaskGenerator();
         Component evalStorage = new EvalStorage();
-        Component systemAdapter = new DummySystemAdapter();
+        Component systemAdapter = new SystemAdapter();
         Component evalModule = new EvalModule();
 
         if(dockerized) {
