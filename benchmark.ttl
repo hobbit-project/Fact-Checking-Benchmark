@@ -1,3 +1,5 @@
+http://dice.cs.uni-paderborn.de/factcheck-benchmark/
+
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix hobbit: <http://w3id.org/hobbit/vocab#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
@@ -71,7 +73,7 @@
     rdfs:comment "Dataset from FactBench that should be used"@en;
     rdfs:domain	hobbit:Benchmark;
     rdfs:range <http://dice.cs.uni-paderborn.de/factcheck-benchmark/factbenchDataSet>;
-    hobbit:defaultValue <http://dice.cs.uni-paderborn.de/factcheck-benchmark/test-correct-benchmark> .
+    hobbit:defaultValue <http://dice.cs.uni-paderborn.de/factcheck-benchmark/SWC2019-task2-train> .
 
 <http://dice.cs.uni-paderborn.de/factcheck-benchmark/seed> a hobbit:Parameter, hobbit:ConfigurableParameter, hobbit:FeatureParameter;
     rdfs:label "Seed"@en;
@@ -83,69 +85,70 @@
 <http://dice.cs.uni-paderborn.de/factcheck-benchmark/factbenchDataSet> a rdfs:Class, owl:Class .
 
 <http://dice.cs.uni-paderborn.de/factcheck-benchmark/test> a <http://dice.cs.uni-paderborn.de/factcheck-benchmark/factbenchDataSet>;
-	rdfs:label "Factbench-Test"@en;
-	rdfs:comment "using Factbench-Test dataset"@en .
+	rdfs:label "Factbench Test"@en;
+	rdfs:comment "Factbench Test dataset"@en .
 
 <http://dice.cs.uni-paderborn.de/factcheck-benchmark/train> a <http://dice.cs.uni-paderborn.de/factcheck-benchmark/factbenchDataSet>;
-	rdfs:label "Factbench-Train"@en;
-	rdfs:comment "using Factbench-Train dataset"@en .
+	rdfs:label "Factbench Train"@en;
+	rdfs:comment "Factbench Train dataset"@en .
 
-<http://dice.cs.uni-paderborn.de/factcheck-benchmark/test-wrong-date> a <http://dice.cs.uni-paderborn.de/factcheck-benchmark/factbenchDataSet>;
-	rdfs:label "Factbench-Test-Wrong-Date"@en;
-	rdfs:comment "using Factbench-Test-Wrong-Date dataset"@en .
+<http://dice.cs.uni-paderborn.de/factcheck-benchmark/test/date> a <http://dice.cs.uni-paderborn.de/factcheck-benchmark/factbenchDataSet>;
+	rdfs:label "Factbench Test-Date"@en;
+	rdfs:comment "Factbench Test-Date dataset"@en .
 
-<http://dice.cs.uni-paderborn.de/factcheck-benchmark/test-wrong-domain> a <http://dice.cs.uni-paderborn.de/factcheck-benchmark/factbenchDataSet>;
-	rdfs:label "Factbench-Test-Wrong-Domain"@en;
-	rdfs:comment "using Factbench-Test-Wrong-Domain dataset"@en .
+<http://dice.cs.uni-paderborn.de/factcheck-benchmark/test/domain> a <http://dice.cs.uni-paderborn.de/factcheck-benchmark/factbenchDataSet>;
+	rdfs:label "Factbench Test-Domain"@en;
+	rdfs:comment "Factbench Test-Domain dataset"@en .
 
-<http://dice.cs.uni-paderborn.de/factcheck-benchmark/test-wrong-domain-range> a <http://dice.cs.uni-paderborn.de/factcheck-benchmark/factbenchDataSet>;
-	rdfs:label "Factbench-Test-Wrong-Domain-Range"@en;
-	rdfs:comment "using Factbench-Test-Wrong-Domain-Range dataset"@en .
+<http://dice.cs.uni-paderborn.de/factcheck-benchmark/test/domain-range> a <http://dice.cs.uni-paderborn.de/factcheck-benchmark/factbenchDataSet>;
+	rdfs:label "Factbench Test-Domain-Range"@en;
+	rdfs:comment "Factbench Test-Domain-Range dataset"@en .
 
-<http://dice.cs.uni-paderborn.de/factcheck-benchmark/test-wrong-mix> a <http://dice.cs.uni-paderborn.de/factcheck-benchmark/factbenchDataSet>;
-	rdfs:label "Factbench-Test-Wrong-Mix"@en;
-	rdfs:comment "using Factbench-Test-Wrong-Mix dataset"@en .
+<http://dice.cs.uni-paderborn.de/factcheck-benchmark/test/mix> a <http://dice.cs.uni-paderborn.de/factcheck-benchmark/factbenchDataSet>;
+	rdfs:label "Factbench Test-Mix"@en;
+	rdfs:comment "Factbench Test-Mix dataset"@en .
 
-<http://dice.cs.uni-paderborn.de/factcheck-benchmark/test-wrong-property> a <http://dice.cs.uni-paderborn.de/factcheck-benchmark/factbenchDataSet>;
-	rdfs:label "Factbench-Test-Wrong-Property"@en;
-	rdfs:comment "using Factbench-Test-Wrong-Property dataset"@en .
+<http://dice.cs.uni-paderborn.de/factcheck-benchmark/test/property> a <http://dice.cs.uni-paderborn.de/factcheck-benchmark/factbenchDataSet>;
+	rdfs:label "Factbench Test-Property"@en;
+	rdfs:comment "Factbench Test-Property dataset"@en .
 
-<http://dice.cs.uni-paderborn.de/factcheck-benchmark/test-wrong-random> a <http://dice.cs.uni-paderborn.de/factcheck-benchmark/factbenchDataSet>;
-	rdfs:label "Factbench-Test-Wrong-Random"@en;
-	rdfs:comment "using Factbench-Test-Wrong-Random dataset"@en .
+<http://dice.cs.uni-paderborn.de/factcheck-benchmark/test/random> a <http://dice.cs.uni-paderborn.de/factcheck-benchmark/factbenchDataSet>;
+	rdfs:label "Factbench Test-Random"@en;
+	rdfs:comment "Factbench Test-Random dataset"@en .
 
-<http://dice.cs.uni-paderborn.de/factcheck-benchmark/test-wrong-range> a <http://dice.cs.uni-paderborn.de/factcheck-benchmark/factbenchDataSet>;
-	rdfs:label "Factbench-Test-Wrong-Range"@en;
-	rdfs:comment "using Factbench-Test-Wrong-Range dataset"@en .
+<http://dice.cs.uni-paderborn.de/factcheck-benchmark/test/range> a <http://dice.cs.uni-paderborn.de/factcheck-benchmark/factbenchDataSet>;
+	rdfs:label "Factbench Test-Range"@en;
+	rdfs:comment "Factbench Test-Range dataset"@en .
 
-<http://dice.cs.uni-paderborn.de/factcheck-benchmark/train-wrong-date> a <http://dice.cs.uni-paderborn.de/factcheck-benchmark/factbenchDataSet>;
-      rdfs:label "Factbench-Train-Wrong-Date"@en;
-      rdfs:comment "using Factbench-Train-Wrong-Date dataset"@en .
+<http://dice.cs.uni-paderborn.de/factcheck-benchmark/train-date> a <http://dice.cs.uni-paderborn.de/factcheck-benchmark/factbenchDataSet>;
+      rdfs:label "Factbench Train-Date"@en;
+      rdfs:comment "Factbench Train-Date dataset"@en .
 
-<http://dice.cs.uni-paderborn.de/factcheck-benchmark/train-wrong-domain> a <http://dice.cs.uni-paderborn.de/factcheck-benchmark/factbenchDataSet>;
-      rdfs:label "Factbench-Train-Wrong-Domain"@en;
-      rdfs:comment "using Factbench-Train-Wrong-Domain dataset"@en .
+<http://dice.cs.uni-paderborn.de/factcheck-benchmark/train-domain> a <http://dice.cs.uni-paderborn.de/factcheck-benchmark/factbenchDataSet>;
+      rdfs:label "Factbench Train-Domain"@en;
+      rdfs:comment "Factbench Train-Domain dataset"@en .
 
-<http://dice.cs.uni-paderborn.de/factcheck-benchmark/train-wrong-domain-range> a <http://dice.cs.uni-paderborn.de/factcheck-benchmark/factbenchDataSet>;
-      rdfs:label "Factbench-Train-Wrong-Domain-Range"@en;
-      rdfs:comment "using Factbench-Train-Wrong-Domain-Range dataset"@en .
+<http://dice.cs.uni-paderborn.de/factcheck-benchmark/train-domain-range> a <http://dice.cs.uni-paderborn.de/factcheck-benchmark/factbenchDataSet>;
+      rdfs:label "Factbench Train-Domain-Range"@en;
+      rdfs:comment "Factbench Train-Domain-Range dataset"@en .
 
-<http://dice.cs.uni-paderborn.de/factcheck-benchmark/train-wrong-mix> a <http://dice.cs.uni-paderborn.de/factcheck-benchmark/factbenchDataSet>;
-      rdfs:label "Factbench-Train-Wrong-Mix"@en;
-      rdfs:comment "using Factbench-Train-Wrong-Mix dataset"@en .
+<http://dice.cs.uni-paderborn.de/factcheck-benchmark/train-mix> a <http://dice.cs.uni-paderborn.de/factcheck-benchmark/factbenchDataSet>;
+      rdfs:label "Factbench Train-Mix"@en;
+      rdfs:comment "Factbench Train-Mix dataset"@en .
 
-<http://dice.cs.uni-paderborn.de/factcheck-benchmark/train-wrong-property> a <http://dice.cs.uni-paderborn.de/factcheck-benchmark/factbenchDataSet>;
-      rdfs:label "Factbench-Train-Wrong-Property"@en;
-      rdfs:comment "using Factbench-Train-Wrong-Property dataset"@en .
+<http://dice.cs.uni-paderborn.de/factcheck-benchmark/train-property> a <http://dice.cs.uni-paderborn.de/factcheck-benchmark/factbenchDataSet>;
+      rdfs:label "Factbench Train-Property"@en;
+      rdfs:comment "Factbench Train-Property dataset"@en .
 
-<http://dice.cs.uni-paderborn.de/factcheck-benchmark/train-wrong-random> a <http://dice.cs.uni-paderborn.de/factcheck-benchmark/factbenchDataSet>;
-      rdfs:label "Factbench-Train-Wrong-Random"@en;
-      rdfs:comment "using Factbench-Train-Wrong-Random dataset"@en .
+<http://dice.cs.uni-paderborn.de/factcheck-benchmark/train-random> a <http://dice.cs.uni-paderborn.de/factcheck-benchmark/factbenchDataSet>;
+      rdfs:label "Factbench Train-Random"@en;
+      rdfs:comment "Factbench Train-Random dataset"@en .
 
-<http://dice.cs.uni-paderborn.de/factcheck-benchmark/train-wrong-range> a <http://dice.cs.uni-paderborn.de/factcheck-benchmark/factbenchDataSet>;
-      rdfs:label "Factbench-Train-Wrong-Range"@en;
-      rdfs:comment "using Factbench-Train-Wrong-Range dataset"@en .
+<http://dice.cs.uni-paderborn.de/factcheck-benchmark/train-range> a <http://dice.cs.uni-paderborn.de/factcheck-benchmark/factbenchDataSet>;
+      rdfs:label "Factbench Train-Range"@en;
+      rdfs:comment "Factbench Train-Range dataset"@en .
 
-<http://dice.cs.uni-paderborn.de/factcheck-benchmark/test-correct-benchmark> a <http://dice.cs.uni-paderborn.de/factcheck-benchmark/factbenchDataSet>;
-      rdfs:label "Benchmark-Tester"@en;
-      rdfs:comment "using Benchmark-Test dataset"@en .
+
+<http://dice.cs.uni-paderborn.de/factcheck-benchmark/SWC2019-task2-train> a <http://dice.cs.uni-paderborn.de/factcheck-benchmark/factbenchDataSet>;
+      rdfs:label "SWC 2019 Training"@en;
+      rdfs:comment "Training dataset of the Semantic Web Challenge 2019"@en .

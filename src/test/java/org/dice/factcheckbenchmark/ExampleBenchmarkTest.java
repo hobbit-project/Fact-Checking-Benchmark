@@ -53,7 +53,7 @@ public class ExampleBenchmarkTest extends EnvironmentVariablesWrapper {
 
 
     @Test
-    @Ignore
+//    @Ignore
     public void buildImages() throws Exception {
 
         init(false);

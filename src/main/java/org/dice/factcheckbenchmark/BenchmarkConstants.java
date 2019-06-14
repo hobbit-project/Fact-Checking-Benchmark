@@ -46,12 +46,12 @@ public class BenchmarkConstants {
     public static final String ENV_KPI_EVALUATION_TIME = "EVALUATION_TIME";
 
     //Evaluation Module URIs and environment variables
-    public static final String URI_KPI_RECALL = BENCHMARK_URI + "recall";
-    public static final String URI_KPI_PRECISION = BENCHMARK_URI + "precision";
-    public static final String URI_KPI_ACCURACY = BENCHMARK_URI + "accuracy";
-    public static final String URI_KPI_ROC = BENCHMARK_URI + "roc";
-    public static final String URI_KPI_AUC = BENCHMARK_URI + "auc";
-    public static final String URI_KPI_EVALUATION_TIME = BENCHMARK_URI + "runTime";
+//    public static final String URI_KPI_RECALL = BENCHMARK_URI + "recall";
+//    public static final String URI_KPI_PRECISION = BENCHMARK_URI + "precision";
+//    public static final String URI_KPI_ACCURACY = BENCHMARK_URI + "accuracy";
+//    public static final String URI_KPI_ROC = BENCHMARK_URI + "roc";
+//    public static final String URI_KPI_AUC = BENCHMARK_URI + "auc";
+//    public static final String URI_KPI_EVALUATION_TIME = BENCHMARK_URI + "runTime";
 
     public static final String ENV_FACTBENCH_DATA_SET = "FACTBENCH_DATA_SET";
     public static final String URI_FACTBENCH_DATA_SET = BENCHMARK_URI + "dataSet";

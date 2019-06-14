@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.jena.rdf.model.NodeIterator;
 import org.dice.factcheckbenchmark.BenchmarkConstants;
+import org.dice.factcheckbenchmark.benchmark.vocab.FactCheck;
 import org.hobbit.core.Commands;
 import org.hobbit.core.components.AbstractBenchmarkController;
 import org.hobbit.sdk.JenaKeyValue;
@@ -15,7 +16,7 @@ import org.slf4j.LoggerFactory;
 public class BenchmarkController extends AbstractBenchmarkController {
     private static final Logger logger = LoggerFactory.getLogger(BenchmarkController.class);
     private static JenaKeyValue parameters;
-    private double FACTCHECK_THRESHOLD;
+//    private double FACTCHECK_THRESHOLD;
 
     @Override
     public void init() throws Exception {
@@ -32,8 +33,7 @@ public class BenchmarkController extends AbstractBenchmarkController {
         /*
             Obtain FactBench data set from param model
          */
-        NodeIterator iterator = benchmarkParamModel.listObjectsOfProperty(benchmarkParamModel
-                .getProperty(BenchmarkConstants.URI_FACTBENCH_DATA_SET));
+        NodeIterator iterator = benchmarkParamModel.listObjectsOfProperty(FactCheck.dataSet);
 
         String dataSet = "http://project-hobbit.eu/factcheck-benchmark/evaluation";
         if (iterator.hasNext()) {
@@ -43,27 +43,27 @@ public class BenchmarkController extends AbstractBenchmarkController {
                 logger.debug("Dataset {} selected", dataSet);
 
             } catch (Exception e) {
-                logger.debug("Couldn't get " + BenchmarkConstants.URI_FACTBENCH_DATA_SET + " parameter from parameter model.", e);
+                logger.debug("Couldn't get " + FactCheck.dataSet.getURI() + " parameter from parameter model.", e);
             }
         }
 
         /*
             Obtain threshold for Factcheck
          */
-        iterator = benchmarkParamModel.listObjectsOfProperty(benchmarkParamModel
-                .getProperty(BenchmarkConstants.URI_FACTCHECK_THRESHOLD));
+//        iterator = benchmarkParamModel.listObjectsOfProperty(benchmarkParamModel
+//                .getProperty(BenchmarkConstants.URI_FACTCHECK_THRESHOLD));
 
-        FACTCHECK_THRESHOLD = 0.2;
-        if (iterator.hasNext()) {
-            try {
-
-                FACTCHECK_THRESHOLD = iterator.next().asLiteral().getDouble();
-                logger.debug("Factcheck threshold {} set", FACTCHECK_THRESHOLD);
-
-            } catch (Exception e) {
-                logger.debug("Couldn't get " + BenchmarkConstants.URI_FACTCHECK_THRESHOLD + " parameter from model.", e);
-            }
-        }
+//        FACTCHECK_THRESHOLD = 0.2;
+//        if (iterator.hasNext()) {
+//            try {
+//
+//                FACTCHECK_THRESHOLD = iterator.next().asLiteral().getDouble();
+//                logger.debug("Factcheck threshold {} set", FACTCHECK_THRESHOLD);
+//
+//            } catch (Exception e) {
+//                logger.debug("Couldn't get " + BenchmarkConstants.URI_FACTCHECK_THRESHOLD + " parameter from model.", e);
+//            }
+//        }
 
         // Create the other components
 
@@ -131,14 +131,7 @@ public class BenchmarkController extends AbstractBenchmarkController {
 
         // Create the evaluation module
 
-        String[] envVariables = new String[]{BenchmarkConstants.ENV_KPI_ACCURACY + "=" + BenchmarkConstants.URI_KPI_ACCURACY,
-                BenchmarkConstants.ENV_KPI_ROC + "=" + BenchmarkConstants.URI_KPI_ROC,
-                BenchmarkConstants.ENV_KPI_AUC + "=" + BenchmarkConstants.URI_KPI_AUC,
-                BenchmarkConstants.ENV_KPI_EVALUATION_TIME + "=" + BenchmarkConstants.URI_KPI_EVALUATION_TIME,
-                BenchmarkConstants.ENV_KPI_RECALL + "=" + BenchmarkConstants.URI_KPI_RECALL,
-                BenchmarkConstants.ENV_KPI_PRECISION + "=" + BenchmarkConstants.URI_KPI_PRECISION,
-                BenchmarkConstants.ENV_FACTCHECK_THRESHOLD + "=" + String.valueOf(FACTCHECK_THRESHOLD)};
-        createEvaluationModule(BenchmarkConstants.EVALMODULE_IMAGE_NAME, envVariables);
+        createEvaluationModule(BenchmarkConstants.EVALMODULE_IMAGE_NAME, new String[]{});
 
         // wait for the evaluation to finish
         waitForEvalComponentsToFinish();
