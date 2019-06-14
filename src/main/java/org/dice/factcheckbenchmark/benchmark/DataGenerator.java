@@ -46,7 +46,7 @@ public class DataGenerator extends AbstractDataGenerator {
         // running in parallel.
         logger.debug("generateData()");
         logger.info("Walking across {}", FACTBENCH_DIRECTORY);
-        sendDataFromDirectory(Paths.get(FACTBENCH_DIRECTORY));
+        sendDataFromFile(Paths.get(FACTBENCH_DIRECTORY));
     }
 
     private void sendDataFromDirectory(final Path factbenchPath) throws IOException {
