@@ -3,62 +3,68 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 
-<http://dice.cs.uni-paderborn.de/factcheck-benchmark/benchmark> a hobbit:Benchmark;
+<http://dice.cs.uni-paderborn.de/factcheck-benchmark/benchmark-1.1> a hobbit:Benchmark;
     rdfs:label "FactCheck Benchmark"@en;
     rdfs:comment    "FactCheck Algorithm benchmark"@en;
     hobbit:imageName    "git.project-hobbit.eu:4567/oshando/factcheck-benchmark/benchmark-controller";
     hobbit:hasAPI <http://dice.cs.uni-paderborn.de/factcheck-benchmark/service>;
-    hobbit:version "v1.0"@en;
+    hobbit:version "v1.1"@en;
     hobbit:measuresKPI <http://dice.cs.uni-paderborn.de/factcheck-benchmark/precision>;
     hobbit:measuresKPI <http://dice.cs.uni-paderborn.de/factcheck-benchmark/recall>;
-    hobbit:measuresKPI <http://dice.cs.uni-paderborn.de/factcheck-benchmark/accuracy>;
     hobbit:measuresKPI <http://dice.cs.uni-paderborn.de/factcheck-benchmark/fmeasure>;
     hobbit:measuresKPI <http://dice.cs.uni-paderborn.de/factcheck-benchmark/runTime>;
+    hobbit:measuresKPI <http://dice.cs.uni-paderborn.de/factcheck-benchmark/avgRunTime>;
+    hobbit:measuresKPI <http://dice.cs.uni-paderborn.de/factcheck-benchmark/avgRunTimeStdDev>;
     hobbit:measuresKPI <http://dice.cs.uni-paderborn.de/factcheck-benchmark/auc>;
-    hobbit:measuresKPI <http://dice.cs.uni-paderborn.de/factcheck-benchmark/roc>;
-    hobbit:hasParameter <http://dice.cs.uni-paderborn.de/factcheck-benchmark/dataSet>;
-    hobbit:hasParameter <http://dice.cs.uni-paderborn.de/factcheck-benchmark/probabilityThreshold>.
+    hobbit:measuresKPI <http://dice.cs.uni-paderborn.de/factcheck-benchmark/rocCurve>;
+    hobbit:measuresKPI <http://dice.cs.uni-paderborn.de/factcheck-benchmark/confidenceThreshold>;
+    hobbit:hasParameter <http://dice.cs.uni-paderborn.de/factcheck-benchmark/seed>;
+    hobbit:hasParameter <http://dice.cs.uni-paderborn.de/factcheck-benchmark/dataSet> .
 
 <http://dice.cs.uni-paderborn.de/factcheck-benchmark/precision> a hobbit:KPI;
      rdfs:label "Precision"@en;
-        rdfs:comment "Precision = truePositive / (truePositive + falsePositive)"@en;
+        rdfs:comment "Amount of true positive classifications compared to the number of all classifications. It is calculated based on the confusion matrix of true and false facts."@en;
         rdfs:range xsd:double .
 
 <http://dice.cs.uni-paderborn.de/factcheck-benchmark/recall> a hobbit:KPI;
      rdfs:label "Recall"@en;
-        rdfs:comment "Recall = truePositive  / (truePositive + falseNegative)"@en;
+        rdfs:comment "Amount of true positive classifications compared to the number of all expected true and false classifications. It is calculated based on the confusion matrix of true and false facts."@en;
         rdfs:range xsd:double .
 
-<http://dice.cs.uni-paderborn.de/factcheck-benchmark/accuracy> a hobbit:KPI;
-    rdfs:label "Accuracy"@en;
-    rdfs:comment "Accuracy = (truePositive + trueNegative) / Total population"@en;
-    rdfs:range xsd:double .
-
 <http://dice.cs.uni-paderborn.de/factcheck-benchmark/fmeasure> a hobbit:KPI;
-	rdfs:label "F-measure"@en;
-	rdfs:comment "F-measure is the harmonic mean of precision and recall."@en;
+	rdfs:label "F1-measure"@en;
+	rdfs:comment "F1-measure is the harmonic mean of precision and recall."@en;
 	rdfs:range xsd:double .
 
 <http://dice.cs.uni-paderborn.de/factcheck-benchmark/runTime> a hobbit:KPI;
-	rdfs:label "Run Time"@en;
-	rdfs:comment "Run time for benchmark"@en;
+	rdfs:label "Runtime (in ms)"@en;
+	rdfs:comment "Overall runtime of the complete experiment in ms."@en;
 	rdfs:range xsd:long .
 
-<http://dice.cs.uni-paderborn.de/factcheck-benchmark/auc> a hobbit:KPI;
-	rdfs:label "Area Under Curve (AUC)"@en;
-	rdfs:comment "Area underneath ROC"@en;
+<http://dice.cs.uni-paderborn.de/factcheck-benchmark/avgRunTime> a hobbit:KPI;
+	rdfs:label "Avg. runtime per fact (in ms)"@en;
+	rdfs:comment "Average runtime for each fact in ms."@en;
 	rdfs:range xsd:double .
 
-<http://dice.cs.uni-paderborn.de/factcheck-benchmark/roc> a hobbit:KPI;
-	rdfs:label "Receiver Operating Characteristic Curve (ROC) points"@en;
-	rdfs:comment "True positive rate is plotted in function of the false positive rate"@en;
-	rdfs:range xsd:string .
+<http://dice.cs.uni-paderborn.de/factcheck-benchmark/avgRunTimeStdDev> a hobbit:KPI;
+	rdfs:label "Avg. runtim standard deviation"@en;
+	rdfs:comment "Standard deviation of the average runtime."@en;
+	rdfs:range xsd:double .
 
-<http://dice.cs.uni-paderborn.de/factcheck-benchmark/probabilityThreshold> a hobbit:Parameter, hobbit:ConfigurableParameter, hobbit:FeatureParameter;
-    rdfs:label "Probability threshold"@en;
-    rdfs:comment "Probability threshold"@en;
-    rdfs:range xsd:double;
-    hobbit:defaultValue "0.05"^^xsd:float .
+<http://dice.cs.uni-paderborn.de/factcheck-benchmark/auc> a hobbit:KPI;
+	rdfs:label "Area Under Curve (ROC-AUC)"@en;
+	rdfs:comment "Area under the ROC curve"@en;
+	rdfs:range xsd:double .
+
+<http://dice.cs.uni-paderborn.de/factcheck-benchmark/rocCurve> a hobbit:KPI;
+	rdfs:label "Receiver Operating Characteristic Curve (ROC)"@en;
+	rdfs:comment "True positive rate is plotted in function of the false positive rate"@en;
+  	rdfs:range <http://purl.org/linked-data/cube#DataSet> .
+
+<http://dice.cs.uni-paderborn.de/factcheck-benchmark/confidenceThreshold> a hobbit:KPI;
+    rdfs:label "Confidence threshold"@en;
+    rdfs:comment "The confidence threshold used to decide whether a fact is true or false searched by maximizing the F1-measure."@en;
+    rdfs:range xsd:double .
 
 <http://dice.cs.uni-paderborn.de/factcheck-benchmark/dataSet> a hobbit:Parameter, hobbit:ConfigurableParameter, hobbit:FeatureParameter;
     rdfs:label "Dataset name"@en;
@@ -66,6 +72,13 @@
     rdfs:domain	hobbit:Benchmark;
     rdfs:range <http://dice.cs.uni-paderborn.de/factcheck-benchmark/factbenchDataSet>;
     hobbit:defaultValue <http://dice.cs.uni-paderborn.de/factcheck-benchmark/test-correct-benchmark> .
+
+<http://dice.cs.uni-paderborn.de/factcheck-benchmark/seed> a hobbit:Parameter, hobbit:ConfigurableParameter, hobbit:FeatureParameter;
+    rdfs:label "Seed"@en;
+    rdfs:comment "The seed value used to initialize random number generators."@en;
+    rdfs:domain	hobbit:Benchmark;
+    rdfs:range xsd:long;
+    hobbit:defaultValue "1"^^xsd:long .
 
 <http://dice.cs.uni-paderborn.de/factcheck-benchmark/factbenchDataSet> a rdfs:Class, owl:Class .
 

@@ -1,5 +1,7 @@
 package org.dice.factcheckbenchmark.benchmark;
 
+import java.io.IOException;
+
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.jena.rdf.model.NodeIterator;
 import org.dice.factcheckbenchmark.BenchmarkConstants;
@@ -8,8 +10,6 @@ import org.hobbit.core.components.AbstractBenchmarkController;
 import org.hobbit.sdk.JenaKeyValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
 
 
 public class BenchmarkController extends AbstractBenchmarkController {

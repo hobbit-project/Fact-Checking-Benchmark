@@ -36,6 +36,11 @@
 
         <dependency>
             <groupId>org.hobbit</groupId>
+            <artifactId>core</artifactId>
+            <version>1.0.17</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hobbit</groupId>
             <artifactId>hobbit-java-sdk</artifactId>
             <version>1.1.9</version>
         </dependency>
@@ -58,11 +63,6 @@
             <version>8.3.1</version>
         </dependency>
         <dependency>
-            <groupId>org.hobbit</groupId>
-            <artifactId>core</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>${slf4j.version}</version>
@@ -76,6 +76,13 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- System rules for setting environment variables -->
+        <dependency>
+            <groupId>com.github.stefanbirkner</groupId>
+            <artifactId>system-rules</artifactId>
+            <version>1.16.0</version>
             <scope>test</scope>
         </dependency>
 
@@ -182,10 +189,10 @@
                     </execution>
                 </executions>
             </plugin>
-
-            <plugin>
+<!--             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-install-plugin</artifactId>
+                <version>3.0.0-M1</version>
                 <executions>
                     <execution>
                         <id>hack-binary</id>
@@ -204,7 +211,7 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin> -->
 
         </plugins>
     </build>
